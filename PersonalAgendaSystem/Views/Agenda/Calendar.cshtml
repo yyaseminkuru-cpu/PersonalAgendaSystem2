@@ -1,0 +1,99 @@
+﻿@model List<PersonalAgendaSystem.Models.AgendaItems>
+
+@{
+    ViewBag.Title = "Takvim";
+}
+<h2>@ViewBag.MonthName @ViewBag.Year Takvimi</h2>
+@Html.ActionLink("Liste Görünümü", "Index", "Agenda", null, new { @class = "btn btn-secondary mb-3" })
+
+
+
+<table class="table table-bordered text-center">
+    <thead>
+        <tr>
+            <th>Pazartesi</th>
+            <th>Salı</th>
+            <th>Çarşamba</th>
+            <th>Perşembe</th>
+            <th>Cuma</th>
+            <th>Cumartesi</th>
+            <th>Pazar</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int day = 1;
+            int cell = 0;
+        }
+
+        @while (day <= ViewBag.DaysInMonth)
+        {
+            <tr>
+                @for (int col = 0; col < 7; col++)
+                {
+                    if (cell < ViewBag.StartOffset || day > ViewBag.DaysInMonth)
+                    {
+                        <td style="height:120px; vertical-align:top;"></td>
+                    }
+                    else
+                    {
+                        DateTime currentDate = new DateTime(ViewBag.Year, ViewBag.Month, day);
+
+                        var dayItems = Model
+                            .Where(x => x.StartDate.Date <= currentDate.Date &&
+                                        x.EndDate.Date >= currentDate.Date)
+                            .ToList();
+
+            <td style="height:120px; vertical-align:top;">
+                <strong>@day</strong>
+
+                @foreach (var item in dayItems)
+                {
+                    string btnClass = "btn btn-sm mt-1 ";
+
+                    if (item.Status == "Bekliyor")
+                    {
+                        btnClass += "btn-secondary";
+                    }
+                    else if (item.Status == "Devam Ediyor")
+                    {
+                        btnClass += "btn-info";
+                    }
+                    else if (item.Status == "Tamamlandı")
+                    {
+                        btnClass += "btn-warning";
+                    }
+                    else if (item.Status == "Onaylandı")
+                    {
+                        btnClass += "btn-success";
+                    }
+                    else if (item.Status == "İptal Edildi")
+                    {
+                        btnClass += "btn-danger";
+                    }
+                    else
+                    {
+                        btnClass += "btn-light";
+                    }
+
+                    <div>
+                        @Html.ActionLink(item.Title, "Details", "Agenda", new { id = item.AgendaItemId }, new { @class = btnClass })
+                    </div>
+                }
+
+
+            </td>
+
+                        day++;
+                    }
+
+                    cell++;
+                }
+            </tr>
+        }
+    </tbody>
+
+
+</table>
+

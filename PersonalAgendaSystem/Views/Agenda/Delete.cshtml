@@ -1,0 +1,51 @@
+﻿@model PersonalAgendaSystem.Models.AgendaItems
+
+@{
+    ViewBag.Title = "Ajanda Kaydı Sil";
+}
+
+<h2>Ajanda Kaydı Sil</h2>
+<div class="alert alert-warning">
+    Bu ajanda kaydını silmek istediğinize emin misiniz?
+</div>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Başlık</th>
+        <td>@Model.Title</td>
+    </tr>
+    <tr>
+        <th>Açıklama</th>
+        <td>@Model.Description</td>
+    </tr>
+    <tr>
+        <th>Kategori</th>
+        <td>@Model.Categories.CategoryName</td>
+    </tr>
+    <tr>
+        <th>Başlangıç Tarihi</th>
+        <td>@Model.StartDate.ToString("dd.MM.yyyy HH:mm")</td>
+    </tr>
+    <tr>
+        <th>Bitiş Tarihi</th>
+        <td>@Model.EndDate.ToString("dd.MM.yyyy HH:mm")</td>
+    </tr>
+    <tr>
+        <th>Öncelik</th>
+        <td>@Model.Priority</td>
+    </tr>
+    <tr>
+        <th>Durum</th>
+        <td>@Model.Status</td>
+    </tr>
+
+</table>
+
+@using (Html.BeginForm()) // delete post gider
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.AgendaItemId) // hangi kayıt silincek
+
+    <button type="submit" class="btn btn-danger">Sil</button> // form gönderir
+    @Html.ActionLink("Vazgeç", "Index", "Agenda", null, new { @class = "btn btn-secondary ms-2" })
+}

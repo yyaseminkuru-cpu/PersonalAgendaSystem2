@@ -1,0 +1,54 @@
+﻿@model PersonalAgendaSystem.Models.AgendaItems
+
+@{
+    ViewBag.Title = "Ajanda Detayı";
+}
+
+<h2>Ajanda Detayı</h2>
+<table class="table table-bordered">
+    <tr>
+        <th>Başlık</th>
+        <td>@Model.Title</td>
+    </tr>
+    <tr>
+        <th>Açıklama</th>
+        <td>@Model.Description</td>
+    </tr>
+    <tr>
+        <th>Kategori</th>
+        <td>@Model.Categories.CategoryName</td>
+    </tr>
+    <tr>
+        <th>Başlangıç Tarihi</th>
+        <td>@Model.StartDate.ToString("dd.MM.yyyy HH:mm")</td>
+    </tr>
+    <tr>
+        <th>Bitiş Tarihi</th>
+        <td>@Model.EndDate.ToString("dd.MM.yyyy HH:mm")</td>
+    </tr>
+    <tr>
+        <th>Öncelik</th>
+        <td>@Model.Priority</td>
+    </tr>
+    <tr>
+        <th>Durum</th>
+        <td>@Model.Status</td>
+    </tr>
+    <tr>
+        <th>Onay Durumu</th>
+        <td>
+            @if (Model.IsApproved == true)
+            {
+                <span class="label label-success">Onaylandı</span>
+            }
+            else
+            {
+                <span class="label label-warning">Onay Bekliyor</span>
+            }
+        </td>
+    </tr>
+</table>
+
+ // düzenleme ve listeye dönme butonlarıde 
+@Html.ActionLink("Düzenle", "Edit", "Agenda", new { id = Model.AgendaItemId }, new { @class = "btn btn-warning" })
+@Html.ActionLink("Listeye Dön", "Index", "Agenda", null, new { @class = "btn btn-secondary ms-2" })

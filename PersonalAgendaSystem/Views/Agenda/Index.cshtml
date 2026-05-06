@@ -1,0 +1,121 @@
+﻿@model List<PersonalAgendaSystem.Models.AgendaItems>
+
+@{
+    ViewBag.Title = "Ajanda Listesi";
+}
+
+<h2>Ajanda Listesi</h2>
+// Yeni ajanda ekleme butonu
+<div class="mb-3 text-end">
+    @Html.ActionLink("Takvim Görünümü", "Calendar", "Agenda", null, new { @class = "btn btn-info me-2" })
+    @Html.ActionLink("Yeni Ajanda Ekle", "Create", "Agenda", null, new { @class = "btn btn-success" })
+</div>
+
+// Öncelik filtresi için form
+@using (Html.BeginForm("Index", "Agenda", FormMethod.Get))
+{
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Öncelik</label>
+            @Html.DropDownList("priority",
+                new SelectList(new[] { "Acil", "Aktif", "Bekleyebilir" }, ViewBag.Priority),
+                "Tüm Öncelikler",
+                new { @class = "form-control" })
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Durum</label>
+            @Html.DropDownList("status",
+                new SelectList(new[] { "Bekliyor", "Devam Ediyor", "Tamamlandı", "Onaylandı", "İptal Edildi" }, ViewBag.Status),
+                "Tüm Durumlar",
+                new { @class = "form-control" })
+        </div>
+
+        <div class="col-md-3">
+            b
+            <label class="form-label">Tarih</label>
+            <input type="date" name="filterDate" class="form-control"
+                   value="@(ViewBag.FilterDate != null ? ((DateTime)ViewBag.FilterDate).ToString("yyyy-MM-dd") : "")" />
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary me-2">Filtrele</button>
+            @Html.ActionLink("Temizle", "Index", "Agenda", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+}
+
+<div class="alert alert-warning text-center">
+    Kayıtlı ajanda bulunamadı.
+</div>
+}
+else
+{
+    // Ajanda kayıtlarını tablo şeklinde listeleyelim
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Başlık</th>
+            <th>Açıklama</th>
+            <th>Başlangıç Tarihi</th>
+            <th>Bitiş Tarihi</th>
+            <th>Öncelik</th>
+            <th>Durum</th>
+            <th>Onay Durumu</th>
+            <th>İşlemler</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        // Ajanda kayıtlarını listeleyelim
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Description</td>
+                <td>@item.StartDate.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@item.EndDate.ToString("dd.MM.yyyy HH:mm")</td>
+
+                <td>@item.Priority</td>
+                <td>@item.Status</td>
+                <td>
+                    @if (item.IsApproved == true)
+                    {
+                        <span class="label label-success">Onaylandı</span>
+                    }
+                    else
+                    {
+                        <span class="label label-warning">Onay Bekliyor</span>
+                    }
+                </td>
+                <td>
+                    // Detay, Düzenle, Sil, Tamamla ve Onayla işlemleri için butonlar
+                    @Html.ActionLink("Detay", "Details", "Agenda", new { id = item.AgendaItemId }, new { @class = "btn btn-info btn-sm" })
+
+                    @if (item.IsApproved == false)
+                    {
+                        @Html.ActionLink("Düzenle", "Edit", "Agenda", new { id = item.AgendaItemId }, new { @class = "btn btn-warning btn-sm mx-1" })
+                    }
+
+                    @Html.ActionLink("Sil", "Delete", "Agenda", new { id = item.AgendaItemId }, new { @class = "btn btn-danger btn-sm" })
+
+                    @if (item.Status != "Tamamlandı" && item.Status != "Onaylandı")
+                    {
+                        @Html.ActionLink("Tamamla", "Complete", "Agenda", new { id = item.AgendaItemId }, new { @class = "btn btn-primary btn-sm ms-1" })
+                    }
+
+                    @if (Session["Role"] != null && Session["Role"].ToString() == "Admin" && item.Status == "Tamamlandı")
+                    {
+                        @Html.ActionLink("Onayla", "Approve", "Agenda", new { id = item.AgendaItemId }, new { @class = "btn btn-success btn-sm ms-1" })
+                    }
+                </td>
+
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+}

@@ -1,0 +1,67 @@
+﻿@model PersonalAgendaSystem.Models.AgendaItems
+
+@{
+    ViewBag.Title = "Ajanda Düzenle";
+}
+
+<h2>Ajanda Düzenle</h2>
+
+
+// Formu açalım
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.AgendaItemId)// ID'yi gizli alana ekleyelim
+    // Başlık alanı
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Title, "Başlık", new { @class = "form-label" })
+        @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+    </div>
+    // Açıklama alanı
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Description, "Açıklama", new { @class = "form-label" })
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 3 })
+        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+    </div>
+    // Kategori alanı
+    <div class="mb-3">
+        <label class="form-label">Kategori</label>
+        @Html.DropDownList("categoryId", (SelectList)ViewBag.Categories, "Kategori Seçiniz", new { @class = "form-control" })
+    </div>
+
+    // Başlangıç tarihi alanı
+    <div class="mb-3">
+        @Html.LabelFor(model => model.StartDate, "Başlangıç Tarihi", new { @class = "form-label" })
+        @Html.TextBoxFor(model => model.StartDate, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local" })
+        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.EndDate, "Bitiş Tarihi", new { @class = "form-label" })
+        @Html.TextBoxFor(model => model.EndDate, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local" })
+        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+    </div>
+    // öncelik
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Priority, "Öncelik", new { @class = "form-label" })
+        @Html.DropDownListFor(model => model.Priority,
+                         new SelectList(new[] { "Acil", "Aktif", "Bekleyebilir" }, Model.Priority),
+                         "Öncelik Seçiniz",
+                         new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+    </div>
+    // durum
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Status, "Durum", new { @class = "form-label" })
+        @Html.DropDownListFor(model => model.Status,
+            new SelectList(new[] { "Bekliyor", "Devam Ediyor", "İptal Edildi" }, Model.Status),
+            "Durum Seçiniz",
+            new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+    </div>
+    // post çalıştırma
+    <button type="submit" class="btn btn-warning">Güncelle</button>
+    @Html.ActionLink("Listeye Dön", "Index", "Agenda", null, new { @class = "btn btn-secondary ms-2" })
+
+}
