@@ -1,0 +1,42 @@
+@model PersonalAgendaSystem.Models.Users
+
+@{
+    ViewBag.Title = "Kullanici Detay";
+}
+
+<h2>Kullanici Detay</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Ad Soyad</th>
+        <td>@Model.FullName</td>
+    </tr>
+    <tr>
+        <th>Kullanici Adi</th>
+        <td>@Model.UserName</td>
+    </tr>
+    <tr>
+        <th>E-posta</th>
+        <td>@Model.Email</td>
+    </tr>
+    <tr>
+        <th>Rol</th>
+        <td>@Model.Role</td>
+    </tr>
+    <tr>
+        <th>Durum</th>
+        <td>
+            @if (Model.IsActive)
+            {
+                <span class="badge bg-success">Aktif</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Pasif</span>
+            }
+        </td>
+    </tr>
+</table>
+
+@Html.ActionLink("Duzenle", "Edit", "Users", new { id = Model.UserID }, new { @class = "btn btn-warning" })
+@Html.ActionLink("Listeye Don", "Index", "Users", null, new { @class = "btn btn-secondary ms-2" })

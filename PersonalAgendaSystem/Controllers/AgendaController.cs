@@ -107,11 +107,16 @@ namespace PersonalAgendaSystem.Controllers
         // CREATE - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(AgendaItems item, int categoryId)
+        public ActionResult Create(AgendaItems item, int? categoryId)
         {
             if (Session["UserID"] == null)  // kullanıcı giriş yapmamışsa erişemesin diye
             {
                 return RedirectToAction("Login", "Home");
+            }
+
+            if (!categoryId.HasValue)
+            {
+                ModelState.AddModelError("categoryId", "Kategori seçiniz.");
             }
 
             if (ModelState.IsValid)
@@ -119,7 +124,12 @@ namespace PersonalAgendaSystem.Controllers
                 int userId = Convert.ToInt32(Session["UserID"]);
 
                 Users user = db.Users.Find(userId);
-                Categories category = db.Categories.Find(categoryId);
+                Categories category = db.Categories.Find(categoryId.Value);
+
+                if (user == null || category == null)
+                {
+                    return HttpNotFound();
+                }
 
                 item.Users = user;
                 item.Categories = category;
@@ -134,7 +144,7 @@ namespace PersonalAgendaSystem.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Categories = new SelectList(db.Categories.Where(x => x.IsActive == true).ToList(), "CategoryID", "CategoryName");
+            ViewBag.Categories = new SelectList(db.Categories.Where(x => x.IsActive == true).ToList(), "CategoryID", "CategoryName", categoryId);
 
             return View(item);
 
@@ -177,7 +187,7 @@ namespace PersonalAgendaSystem.Controllers
                 return RedirectToAction("Details", new { id = item.AgendaItemId });
             }
 
-            ViewBag.Categories = new SelectList(db.Categories.Where(x => x.IsActive == true).ToList(), "CategoryID", "CategoryName"); // Kategori dropdown'ı için
+            ViewBag.Categories = new SelectList(db.Categories.Where(x => x.IsActive == true).ToList(), "CategoryID", "CategoryName", item.Categories.CategoryID); // Kategori dropdown'ı için
 
             return View(item);
         }
@@ -185,7 +195,7 @@ namespace PersonalAgendaSystem.Controllers
         // EDIT - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(AgendaItems item, int categoryId)
+        public ActionResult Edit(AgendaItems item, int? categoryId)
         {
             if (Session["UserID"] == null)
             {
@@ -206,11 +216,16 @@ namespace PersonalAgendaSystem.Controllers
                     return RedirectToAction("Details", new { id = updatedItem.AgendaItemId });
                 }
 
-                Categories category = db.Categories.Find(categoryId);
+                Categories category = categoryId.HasValue
+                    ? db.Categories.Find(categoryId.Value)
+                    : updatedItem.Categories;
 
                 updatedItem.Title = item.Title;
                 updatedItem.Description = item.Description;
-                updatedItem.Categories = category;
+                if (category != null)
+                {
+                    updatedItem.Categories = category;
+                }
                 updatedItem.StartDate = item.StartDate;
                 updatedItem.EndDate = item.EndDate;
                 updatedItem.Priority = item.Priority;
@@ -221,7 +236,7 @@ namespace PersonalAgendaSystem.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Categories = new SelectList(db.Categories.Where(x => x.IsActive == true).ToList(), "CategoryID", "CategoryName");
+            ViewBag.Categories = new SelectList(db.Categories.Where(x => x.IsActive == true).ToList(), "CategoryID", "CategoryName", categoryId);
 
             return View(item);
         }

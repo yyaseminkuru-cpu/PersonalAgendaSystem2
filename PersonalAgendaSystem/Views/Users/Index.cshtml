@@ -1,0 +1,86 @@
+@model List<PersonalAgendaSystem.Models.Users>
+
+@{
+    ViewBag.Title = "Kullanici Listesi";
+}
+
+<h2>Kullanici Listesi</h2>
+
+<div class="mb-3 text-end">
+    @Html.ActionLink("Yeni Kullanici Ekle", "Create", "Users", null, new { @class = "btn btn-success" })
+</div>
+
+@using (Html.BeginForm("Index", "Users", FormMethod.Get))
+{
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="form-label">Arama</label>
+            <input type="text" name="search" class="form-control" value="@ViewBag.Search" placeholder="Ad, kullanici adi veya e-posta" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Rol</label>
+            @Html.DropDownList("role",
+                new SelectList(new[] { "Admin", "Kullanici" }, ViewBag.Role),
+                "Tum Roller",
+                new { @class = "form-control" })
+        </div>
+
+        <div class="col-md-5 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary me-2">Filtrele</button>
+            @Html.ActionLink("Temizle", "Index", "Users", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+}
+
+@if (Model == null || Model.Count == 0)
+{
+    <div class="alert alert-warning text-center">
+        Kayitli kullanici bulunamadi.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Ad Soyad</th>
+                <th>Kullanici Adi</th>
+                <th>E-posta</th>
+                <th>Rol</th>
+                <th>Durum</th>
+                <th>Islemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.FullName</td>
+                    <td>@item.UserName</td>
+                    <td>@item.Email</td>
+                    <td>@item.Role</td>
+                    <td>
+                        @if (item.IsActive)
+                        {
+                            <span class="badge bg-success">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Pasif</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Detay", "Details", "Users", new { id = item.UserID }, new { @class = "btn btn-info btn-sm" })
+                        @Html.ActionLink("Duzenle", "Edit", "Users", new { id = item.UserID }, new { @class = "btn btn-warning btn-sm mx-1" })
+
+                        @if (item.IsActive)
+                        {
+                            @Html.ActionLink("Pasife Al", "Delete", "Users", new { id = item.UserID }, new { @class = "btn btn-danger btn-sm" })
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

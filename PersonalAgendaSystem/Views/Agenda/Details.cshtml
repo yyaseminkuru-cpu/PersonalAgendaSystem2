@@ -1,10 +1,10 @@
 ﻿@model PersonalAgendaSystem.Models.AgendaItems
 
 @{
-    ViewBag.Title = "Ajanda Detayı";
+    ViewBag.Title = "Görev Detayı";
 }
 
-<h2>Ajanda Detayı</h2>
+<h2>Görev Detayı</h2>
 <table class="table table-bordered">
     <tr>
         <th>Başlık</th>
@@ -49,6 +49,5 @@
     </tr>
 </table>
 
- // düzenleme ve listeye dönme butonlarıde 
 @Html.ActionLink("Düzenle", "Edit", "Agenda", new { id = Model.AgendaItemId }, new { @class = "btn btn-warning" })
 @Html.ActionLink("Listeye Dön", "Index", "Agenda", null, new { @class = "btn btn-secondary ms-2" })

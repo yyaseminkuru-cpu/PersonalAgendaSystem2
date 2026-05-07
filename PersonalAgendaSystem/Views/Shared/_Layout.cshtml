@@ -18,9 +18,21 @@
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Giriş", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Hakkında", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Kişi", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    @if (Session["UserID"] == null)
+                    {
+                        <li>@Html.ActionLink("Giriş", "Login", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Görevler", "Index", "Agenda", new { area = "" }, new { @class = "nav-link" })</li>
+
+                        if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
+                        {
+                            <li>@Html.ActionLink("Kullanıcılar", "Index", "Users", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+
+                        <li>@Html.ActionLink("Çıkış", "Logout", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
                 </ul>
             </div>
         </div>

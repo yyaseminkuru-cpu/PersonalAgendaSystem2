@@ -1,0 +1,46 @@
+@model PersonalAgendaSystem.Models.Users
+
+@{
+    ViewBag.Title = "Yeni Kullanici";
+}
+
+<h2>Yeni Kullanici</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.FullName, "Ad Soyad", new { @class = "form-label" })
+        @Html.TextBoxFor(model => model.FullName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.UserName, "Kullanici Adi", new { @class = "form-label" })
+        @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Email, "E-posta", new { @class = "form-label" })
+        @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email" })
+        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Password, "Sifre", new { @class = "form-label" })
+        @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.Role, "Rol", new { @class = "form-label" })
+        @Html.DropDownListFor(model => model.Role, (SelectList)ViewBag.Roles, "Rol Seciniz", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    @Html.ActionLink("Listeye Don", "Index", "Users", null, new { @class = "btn btn-secondary ms-2" })
+}

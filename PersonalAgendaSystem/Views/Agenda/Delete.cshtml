@@ -1,12 +1,12 @@
 ﻿@model PersonalAgendaSystem.Models.AgendaItems
 
 @{
-    ViewBag.Title = "Ajanda Kaydı Sil";
+    ViewBag.Title = "Görev Kaydı Sil";
 }
 
-<h2>Ajanda Kaydı Sil</h2>
+<h2>Görev Kaydı Sil</h2>
 <div class="alert alert-warning">
-    Bu ajanda kaydını silmek istediğinize emin misiniz?
+    Bu görev kaydını silmek istediğinize emin misiniz?
 </div>
 
 <table class="table table-bordered">
@@ -41,11 +41,11 @@
 
 </table>
 
-@using (Html.BeginForm()) // delete post gider
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.AgendaItemId) // hangi kayıt silincek
+    @Html.HiddenFor(model => model.AgendaItemId)
 
-    <button type="submit" class="btn btn-danger">Sil</button> // form gönderir
+    <button type="submit" class="btn btn-danger">Sil</button>
     @Html.ActionLink("Vazgeç", "Index", "Agenda", null, new { @class = "btn btn-secondary ms-2" })
 }

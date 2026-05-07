@@ -1,0 +1,39 @@
+@model PersonalAgendaSystem.Models.Users
+
+@{
+    ViewBag.Title = "Kullaniciyi Pasife Al";
+}
+
+<h2>Kullaniciyi Pasife Al</h2>
+
+<div class="alert alert-warning">
+    Bu kullaniciyi pasife almak istediginize emin misiniz?
+</div>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Ad Soyad</th>
+        <td>@Model.FullName</td>
+    </tr>
+    <tr>
+        <th>Kullanici Adi</th>
+        <td>@Model.UserName</td>
+    </tr>
+    <tr>
+        <th>E-posta</th>
+        <td>@Model.Email</td>
+    </tr>
+    <tr>
+        <th>Rol</th>
+        <td>@Model.Role</td>
+    </tr>
+</table>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.UserID)
+
+    <button type="submit" class="btn btn-danger">Pasife Al</button>
+    @Html.ActionLink("Vazgec", "Index", "Users", null, new { @class = "btn btn-secondary ms-2" })
+}

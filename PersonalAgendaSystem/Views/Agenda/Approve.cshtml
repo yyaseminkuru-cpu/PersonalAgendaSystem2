@@ -1,12 +1,12 @@
 ﻿@model PersonalAgendaSystem.Models.AgendaItems
 
 @{
-    ViewBag.Title = "Ajanda Onayla";
+    ViewBag.Title = "Görev Onayla";
 }
 
-<h2>Ajanda Onayla</h2>
+<h2>Görev Onayla</h2>
 <div class="alert alert-success">
-    Bu tamamlanan ajanda kaydını onaylamak istediğinize emin misiniz?
+    Bu tamamlanan görev kaydını onaylamak istediğinize emin misiniz?
 </div>
 
 <table class="table table-bordered">
@@ -39,8 +39,6 @@
         <td>@Model.Status</td>
     </tr>
 </table>
-
-// onaylama işlemi için form
 
 @using (Html.BeginForm())
 {
