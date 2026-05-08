@@ -3,97 +3,113 @@
 @{
     ViewBag.Title = "Takvim";
 }
-<h2>@ViewBag.MonthName @ViewBag.Year Takvimi</h2>
-@Html.ActionLink("Liste Görünümü", "Index", "Agenda", null, new { @class = "btn btn-secondary mb-3" })
 
+<div class="page-hero">
+    <div>
+        <p class="page-eyebrow">Takvim görünümü</p>
+        <h2>@ViewBag.MonthName @ViewBag.Year Takvimi</h2>
+        <p class="page-subtitle">Görevleri günlere yayılmış şekilde görüntüleyin ve detaylarına hızlıca ulaşın.</p>
+    </div>
+</div>
 
+<div class="mb-3">
+    @Html.ActionLink("Önceki Ay", "Calendar", "Agenda", new { year = ViewBag.PreviousYear, month = ViewBag.PreviousMonth }, new { @class = "btn btn-outline-secondary me-2" })
+    @Html.ActionLink("Bugün", "Calendar", "Agenda", null, new { @class = "btn btn-outline-primary me-2" })
+    @Html.ActionLink("Sonraki Ay", "Calendar", "Agenda", new { year = ViewBag.NextYear, month = ViewBag.NextMonth }, new { @class = "btn btn-outline-secondary me-2" })
+    @Html.ActionLink("Liste Görünümü", "Index", "Agenda", null, new { @class = "btn btn-secondary" })
+</div>
 
-<table class="table table-bordered text-center">
-    <thead>
-        <tr>
-            <th>Pazartesi</th>
-            <th>Salı</th>
-            <th>Çarşamba</th>
-            <th>Perşembe</th>
-            <th>Cuma</th>
-            <th>Cumartesi</th>
-            <th>Pazar</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @{
-            int day = 1;
-            int cell = 0;
-        }
-
-        @while (day <= ViewBag.DaysInMonth)
-        {
+<div class="calendar-wrap">
+    <table class="calendar-table">
+        <thead>
             <tr>
-                @for (int col = 0; col < 7; col++)
-                {
-                    if (cell < ViewBag.StartOffset || day > ViewBag.DaysInMonth)
-                    {
-                        <td style="height:120px; vertical-align:top;"></td>
-                    }
-                    else
-                    {
-                        DateTime currentDate = new DateTime(ViewBag.Year, ViewBag.Month, day);
-
-                        var dayItems = Model
-                            .Where(x => x.StartDate.Date <= currentDate.Date &&
-                                        x.EndDate.Date >= currentDate.Date)
-                            .ToList();
-
-            <td style="height:120px; vertical-align:top;">
-                <strong>@day</strong>
-
-                @foreach (var item in dayItems)
-                {
-                    string btnClass = "btn btn-sm mt-1 ";
-
-                    if (item.Status == "Bekliyor")
-                    {
-                        btnClass += "btn-secondary";
-                    }
-                    else if (item.Status == "Devam Ediyor")
-                    {
-                        btnClass += "btn-info";
-                    }
-                    else if (item.Status == "Tamamlandı")
-                    {
-                        btnClass += "btn-warning";
-                    }
-                    else if (item.Status == "Onaylandı")
-                    {
-                        btnClass += "btn-success";
-                    }
-                    else if (item.Status == "İptal Edildi")
-                    {
-                        btnClass += "btn-danger";
-                    }
-                    else
-                    {
-                        btnClass += "btn-light";
-                    }
-
-                    <div>
-                        @Html.ActionLink(item.Title, "Details", "Agenda", new { id = item.AgendaItemId }, new { @class = btnClass })
-                    </div>
-                }
-
-
-            </td>
-
-                        day++;
-                    }
-
-                    cell++;
-                }
+                <th>Pazartesi</th>
+                <th>Salı</th>
+                <th>Çarşamba</th>
+                <th>Perşembe</th>
+                <th>Cuma</th>
+                <th>Cumartesi</th>
+                <th>Pazar</th>
             </tr>
-        }
-    </tbody>
+        </thead>
 
+        <tbody>
+            @{
+                int day = 1;
+                int cell = 0;
+            }
 
-</table>
+            @while (day <= ViewBag.DaysInMonth)
+            {
+                <tr>
+                    @for (int col = 0; col < 7; col++)
+                    {
+                        if (cell < ViewBag.StartOffset || day > ViewBag.DaysInMonth)
+                        {
+                            <td class="calendar-empty"></td>
+                        }
+                        else
+                        {
+                            DateTime currentDate = new DateTime(ViewBag.Year, ViewBag.Month, day);
+
+                            var dayItems = Model
+                                .Where(x => x.StartDate.Date <= currentDate.Date &&
+                                            x.EndDate.Date >= currentDate.Date)
+                                .OrderBy(x => x.StartDate)
+                                .ToList();
+
+                            string todayClass = currentDate.Date == DateTime.Today ? " calendar-today" : "";
+
+                            <td class="calendar-cell@todayClass">
+                                <div class="calendar-date-row">
+                                    <strong>@day</strong>
+                                    @if (dayItems.Count > 0)
+                                    {
+                                        <span>@dayItems.Count görev</span>
+                                    }
+                                </div>
+
+                                @foreach (var item in dayItems)
+                                {
+                                    string btnClass = "calendar-item ";
+
+                                    if (item.Status == "Bekliyor")
+                                    {
+                                        btnClass += "item-waiting";
+                                    }
+                                    else if (item.Status == "Devam Ediyor")
+                                    {
+                                        btnClass += "item-progress";
+                                    }
+                                    else if (item.Status == "Tamamlandı")
+                                    {
+                                        btnClass += "item-completed";
+                                    }
+                                    else if (item.Status == "Onaylandı")
+                                    {
+                                        btnClass += "item-approved";
+                                    }
+                                    else if (item.Status == "İptal Edildi")
+                                    {
+                                        btnClass += "item-cancelled";
+                                    }
+                                    else
+                                    {
+                                        btnClass += "item-default";
+                                    }
+
+                                    @Html.ActionLink(item.Title, "Details", "Agenda", new { id = item.AgendaItemId }, new { @class = btnClass })
+                                }
+                            </td>
+
+                            day++;
+                        }
+
+                        cell++;
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 

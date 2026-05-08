@@ -38,5 +38,5 @@
     </tr>
 </table>
 
-@Html.ActionLink("Duzenle", "Edit", "Users", new { id = Model.UserID }, new { @class = "btn btn-warning" })
-@Html.ActionLink("Listeye Don", "Index", "Users", null, new { @class = "btn btn-secondary ms-2" })
+<a href="@Url.Action("Edit", "Users", new { id = Model.UserID })" class="btn btn-warning">Duzenle</a>
+<a href="@Url.Action("Index", "Users")" class="btn btn-secondary ms-2">Listeye Don</a>

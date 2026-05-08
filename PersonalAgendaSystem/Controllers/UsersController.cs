@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using PersonalAgendaSystem.Models;
 
@@ -8,6 +9,13 @@ namespace PersonalAgendaSystem.Controllers
     public class UsersController : Controller
     {
         AgendaModelContainer db = new AgendaModelContainer();
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetNoStore();
+            base.OnActionExecuting(filterContext);
+        }
 
         private bool IsAdmin()
         {
@@ -31,34 +39,38 @@ namespace PersonalAgendaSystem.Controllers
 
         private void FillRoleList(string selectedRole = null)
         {
-            ViewBag.Roles = new SelectList(new[] { "Admin", "Kullanici" }, selectedRole);
+            ViewBag.Roles = new SelectList(new[]
+            {
+                new SelectListItem { Text = "Admin", Value = "Admin" },
+                new SelectListItem { Text = "Kullanici", Value = "Kullanici" }
+            }, "Value", "Text", selectedRole);
         }
 
         private void ValidateUser(Users user)
         {
             if (string.IsNullOrWhiteSpace(user.FullName))
             {
-                ModelState.AddModelError("FullName", "Ad soyad boş bırakılamaz.");
+                ModelState.AddModelError("FullName", "Ad soyad bos birakilamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.UserName))
             {
-                ModelState.AddModelError("UserName", "Kullanıcı adı boş bırakılamaz.");
+                ModelState.AddModelError("UserName", "Kullanici adi bos birakilamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.Email))
             {
-                ModelState.AddModelError("Email", "E-posta boş bırakılamaz.");
+                ModelState.AddModelError("Email", "E-posta bos birakilamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.Password))
             {
-                ModelState.AddModelError("Password", "Şifre boş bırakılamaz.");
+                ModelState.AddModelError("Password", "Sifre bos birakilamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.Role))
             {
-                ModelState.AddModelError("Role", "Rol seçiniz.");
+                ModelState.AddModelError("Role", "Rol seciniz.");
             }
         }
 

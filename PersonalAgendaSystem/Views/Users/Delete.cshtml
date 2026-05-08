@@ -1,10 +1,10 @@
 @model PersonalAgendaSystem.Models.Users
 
 @{
-    ViewBag.Title = "Kullaniciyi Pasife Al";
+    ViewBag.Title = "Kullanici Pasife Al";
 }
 
-<h2>Kullaniciyi Pasife Al</h2>
+<h2>Kullanici Pasife Al</h2>
 
 <div class="alert alert-warning">
     Bu kullaniciyi pasife almak istediginize emin misiniz?
@@ -35,5 +35,5 @@
     @Html.HiddenFor(model => model.UserID)
 
     <button type="submit" class="btn btn-danger">Pasife Al</button>
-    @Html.ActionLink("Vazgec", "Index", "Users", null, new { @class = "btn btn-secondary ms-2" })
+    <a href="@Url.Action("Index", "Users")" class="btn btn-secondary ms-2">Vazgec</a>
 }

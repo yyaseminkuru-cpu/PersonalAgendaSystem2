@@ -13,10 +13,25 @@ namespace PersonalAgendaSystem.Controllers
         // Veritabanındaki tablolarla iletişim kurmamızı sağlar
         AgendaModelContainer db = new AgendaModelContainer();
 
+        public ActionResult Index()
+        {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            return RedirectToAction("Index", "Agenda");
+        }
+
         // Login sayfasını açan GET metodu
         // Kullanıcı ilk giriş yaptığında bu çalışır
         public ActionResult Login()
         {
+            if (Session["UserID"] != null)
+            {
+                return RedirectToAction("Index", "Agenda");
+            }
+
             return View();
         }
 
@@ -68,6 +83,10 @@ namespace PersonalAgendaSystem.Controllers
         {
             // Session içindeki tüm bilgileri temizler
             Session.Clear();
+            Session.Abandon();
+
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetNoStore();
 
             // Kullanıcıyı tekrar login sayfasına gönderir
             return RedirectToAction("Login");

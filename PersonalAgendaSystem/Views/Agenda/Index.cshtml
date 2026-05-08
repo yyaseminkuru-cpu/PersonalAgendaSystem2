@@ -4,11 +4,31 @@
     ViewBag.Title = "Görev Listesi";
 }
 
-<h2>Görev Listesi</h2>
+<div class="page-hero">
+    <div>
+        <p class="page-eyebrow">Kişisel planlama paneli</p>
+        <h2>Görev Listesi</h2>
+        <p class="page-subtitle">Görevleri takip et, filtrele, tamamla ve admin onay sürecini tek ekrandan yönet.</p>
+    </div>
+    <div class="hero-actions">
+        @Html.ActionLink("Takvim Görünümü", "Calendar", "Agenda", null, new { @class = "btn btn-info me-2" })
+        @Html.ActionLink("Yeni Görev Ekle", "Create", "Agenda", null, new { @class = "btn btn-success" })
+    </div>
+</div>
 
-<div class="mb-3 text-end">
-    @Html.ActionLink("Takvim Görünümü", "Calendar", "Agenda", null, new { @class = "btn btn-info me-2" })
-    @Html.ActionLink("Yeni Görev Ekle", "Create", "Agenda", null, new { @class = "btn btn-success" })
+<div class="metric-grid">
+    <div class="metric-card">
+        <span>Toplam Görev</span>
+        <strong>@(Model == null ? 0 : Model.Count)</strong>
+    </div>
+    <div class="metric-card">
+        <span>Tamamlanan</span>
+        <strong>@(Model == null ? 0 : Model.Count(x => x.Status == "Tamamlandı" || x.Status == "Onaylandı"))</strong>
+    </div>
+    <div class="metric-card">
+        <span>Onay Bekleyen</span>
+        <strong>@(Model == null ? 0 : Model.Count(x => x.Status == "Tamamlandı" && x.IsApproved == false))</strong>
+    </div>
 </div>
 
 @using (Html.BeginForm("Index", "Agenda", FormMethod.Get))
@@ -51,7 +71,7 @@
 }
 else
 {
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped app-table">
         <thead>
             <tr>
                 <th>Başlık</th>

@@ -48,5 +48,5 @@
     </div>
 
     <button type="submit" class="btn btn-success">Kaydet</button>
-    @Html.ActionLink("Listeye Don", "Index", "Users", null, new { @class = "btn btn-secondary ms-2" })
+    <a href="@Url.Action("Index", "Users")" class="btn btn-secondary ms-2">Listeye Don</a>
 }

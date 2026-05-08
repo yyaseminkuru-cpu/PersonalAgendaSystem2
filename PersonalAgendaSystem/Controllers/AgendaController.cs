@@ -14,6 +14,98 @@ namespace PersonalAgendaSystem.Controllers
         // Entity Framework bağlantısı
         AgendaModelContainer db = new AgendaModelContainer();
 
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetNoStore();
+            base.OnActionExecuting(filterContext);
+        }
+
+        private bool IsLoggedIn()
+        {
+            return Session["UserID"] != null;
+        }
+
+        private bool IsAdmin()
+        {
+            return Session["Role"] != null && Session["Role"].ToString() == "Admin";
+        }
+
+        private int CurrentUserId()
+        {
+            return Convert.ToInt32(Session["UserID"]);
+        }
+
+        private bool CanAccessAgendaItem(AgendaItems item)
+        {
+            if (item == null || item.IsActive == false)
+            {
+                return false;
+            }
+
+            if (IsAdmin())
+            {
+                return true;
+            }
+
+            return item.Users != null && item.Users.UserID == CurrentUserId();
+        }
+
+        private ActionResult RedirectIfNotLoggedIn()
+        {
+            if (!IsLoggedIn())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            return null;
+        }
+
+        private void ValidateAgendaItem(AgendaItems item, int? categoryId)
+        {
+            if (string.IsNullOrWhiteSpace(item.Title))
+            {
+                ModelState.AddModelError("Title", "Başlık boş bırakılamaz.");
+            }
+
+            if (string.IsNullOrWhiteSpace(item.Description))
+            {
+                ModelState.AddModelError("Description", "Açıklama boş bırakılamaz.");
+            }
+
+            if (!categoryId.HasValue)
+            {
+                ModelState.AddModelError("categoryId", "Kategori seçiniz.");
+            }
+
+            if (string.IsNullOrWhiteSpace(item.Priority))
+            {
+                ModelState.AddModelError("Priority", "Öncelik seçiniz.");
+            }
+
+            if (string.IsNullOrWhiteSpace(item.Status))
+            {
+                ModelState.AddModelError("Status", "Durum seçiniz.");
+            }
+
+            if (item.StartDate == DateTime.MinValue)
+            {
+                ModelState.AddModelError("StartDate", "Başlangıç tarihi seçiniz.");
+            }
+
+            if (item.EndDate == DateTime.MinValue)
+            {
+                ModelState.AddModelError("EndDate", "Bitiş tarihi seçiniz.");
+            }
+
+            if (item.StartDate != DateTime.MinValue &&
+                item.EndDate != DateTime.MinValue &&
+                item.EndDate < item.StartDate)
+            {
+                ModelState.AddModelError("EndDate", "Bitiş tarihi başlangıç tarihinden önce olamaz.");
+            }
+        }
+
         // Kullanıcı login olduktan sonra ilk buraya gelecek
         public ActionResult Index(string priority, string status, DateTime? filterDate)
 
@@ -21,13 +113,14 @@ namespace PersonalAgendaSystem.Controllers
         {
             // Eğer kullanıcı giriş yapmadıysa
             // tekrar login sayfasına yönlendir
-            if (Session["UserID"] == null) //kullanıcı giriş yapmamışsa erişemesin diye
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
             {
-                return RedirectToAction("Login", "Home");
+                return redirect;
             }
 
             // Session içindeki kullanıcı ID'sini alıyoruz
-            int userId = Convert.ToInt32(Session["UserID"]);
+            int userId = CurrentUserId();
 
             // Giriş yapan kullanıcının rolünü alıyoruz
             string role = Session["Role"].ToString();
@@ -99,6 +192,11 @@ namespace PersonalAgendaSystem.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
+            {
+                return redirect;
+            }
 
             ViewBag.Categories = new SelectList(db.Categories.Where(x => x.IsActive == true).ToList(), "CategoryID", "CategoryName");
             return View();
@@ -109,19 +207,19 @@ namespace PersonalAgendaSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(AgendaItems item, int? categoryId)
         {
-            if (Session["UserID"] == null)  // kullanıcı giriş yapmamışsa erişemesin diye
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
             {
-                return RedirectToAction("Login", "Home");
+                return redirect;
             }
 
-            if (!categoryId.HasValue)
-            {
-                ModelState.AddModelError("categoryId", "Kategori seçiniz.");
-            }
+            ValidateAgendaItem(item, categoryId);
+
+            ValidateAgendaItem(item, categoryId);
 
             if (ModelState.IsValid)
             {
-                int userId = Convert.ToInt32(Session["UserID"]);
+                int userId = CurrentUserId();
 
                 Users user = db.Users.Find(userId);
                 Categories category = db.Categories.Find(categoryId.Value);
@@ -152,6 +250,12 @@ namespace PersonalAgendaSystem.Controllers
         // DETAILS
         public ActionResult Details(int? id) // id null olabilir diye nullable yaptık
         {
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
+            {
+                return redirect;
+            }
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -164,12 +268,23 @@ namespace PersonalAgendaSystem.Controllers
                 return HttpNotFound();
             }
 
+            if (!CanAccessAgendaItem(item))
+            {
+                return RedirectToAction("Index");
+            }
+
             return View(item); // bulduğumuz kaydı View'a gönderiyoruz
         }
         // EDIT - GET
         [HttpGet]
         public ActionResult Edit(int? id) // id null olabilir diye nullable yaptık
         {
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
+            {
+                return redirect;
+            }
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -180,6 +295,11 @@ namespace PersonalAgendaSystem.Controllers
             if (item == null)
             {
                 return HttpNotFound();
+            }
+
+            if (!CanAccessAgendaItem(item))
+            {
+                return RedirectToAction("Index");
             }
 
             if (item.IsApproved == true)
@@ -197,9 +317,10 @@ namespace PersonalAgendaSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(AgendaItems item, int? categoryId)
         {
-            if (Session["UserID"] == null)
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
             {
-                return RedirectToAction("Login", "Home");
+                return redirect;
             }
 
             if (ModelState.IsValid)
@@ -209,6 +330,11 @@ namespace PersonalAgendaSystem.Controllers
                 if (updatedItem == null)
                 {
                     return HttpNotFound();
+                }
+
+                if (!CanAccessAgendaItem(updatedItem))
+                {
+                    return RedirectToAction("Index");
                 }
 
                 if (updatedItem.IsApproved == true)
@@ -244,6 +370,12 @@ namespace PersonalAgendaSystem.Controllers
         [HttpGet]
         public ActionResult Delete(int? id)
         {
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
+            {
+                return redirect;
+            }
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -256,6 +388,11 @@ namespace PersonalAgendaSystem.Controllers
                 return HttpNotFound();
             }
 
+            if (!CanAccessAgendaItem(item))
+            {
+                return RedirectToAction("Index");
+            }
+
             return View(item);
         }
         // DELETE - POST
@@ -263,11 +400,22 @@ namespace PersonalAgendaSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int AgendaItemId)
         {
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
+            {
+                return redirect;
+            }
+
             AgendaItems item = db.AgendaItems.Find(AgendaItemId);
 
             if (item == null)
             {
                 return HttpNotFound();
+            }
+
+            if (!CanAccessAgendaItem(item))
+            {
+                return RedirectToAction("Index");
             }
 
             item.IsActive = false;
@@ -284,6 +432,12 @@ namespace PersonalAgendaSystem.Controllers
         [HttpGet]
         public ActionResult Complete(int? id)
         {
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
+            {
+                return redirect;
+            }
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -296,6 +450,11 @@ namespace PersonalAgendaSystem.Controllers
                 return HttpNotFound();
             }
 
+            if (!CanAccessAgendaItem(item))
+            {
+                return RedirectToAction("Index");
+            }
+
             return View(item);
         }
 
@@ -304,11 +463,22 @@ namespace PersonalAgendaSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CompleteConfirmed(int AgendaItemId)
         {
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
+            {
+                return redirect;
+            }
+
             AgendaItems item = db.AgendaItems.Find(AgendaItemId);
 
             if (item == null)
             {
                 return HttpNotFound();
+            }
+
+            if (!CanAccessAgendaItem(item))
+            {
+                return RedirectToAction("Index");
             }
 
             item.Status = "Tamamlandı";
@@ -323,7 +493,13 @@ namespace PersonalAgendaSystem.Controllers
         [HttpGet]
         public ActionResult Approve(int? id)
         {
-            if (Session["Role"] == null || Session["Role"].ToString() != "Admin") // Admin olmayan kullanıcıların bu sayfaya erişmesini engellemek için
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
+            {
+                return redirect;
+            }
+
+            if (!IsAdmin()) // Admin olmayan kullanıcıların bu sayfaya erişmesini engellemek için
             {
                 return RedirectToAction("Index");
             }
@@ -340,6 +516,11 @@ namespace PersonalAgendaSystem.Controllers
                 return HttpNotFound();
             }
 
+            if (item.IsActive == false)
+            {
+                return RedirectToAction("Index");
+            }
+
             if (item.Status != "Tamamlandı") // Sadece tamamlanmış kayıtların onaylanabilmesi için
             {
                 return RedirectToAction("Index");
@@ -352,7 +533,13 @@ namespace PersonalAgendaSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ApproveConfirmed(int AgendaItemId)
         {
-            if (Session["Role"] == null || Session["Role"].ToString() != "Admin") // Admin olmayan kullanıcıların bu işlemi yapmasını engellemek için
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
+            {
+                return redirect;
+            }
+
+            if (!IsAdmin()) // Admin olmayan kullanıcıların bu işlemi yapmasını engellemek için
             {
                 return RedirectToAction("Index");
             }
@@ -364,9 +551,14 @@ namespace PersonalAgendaSystem.Controllers
                 return HttpNotFound();
             }
 
+            if (item.IsActive == false)
+            {
+                return RedirectToAction("Index");
+            }
+
             if (item.Status == "Tamamlandı") // Sadece tamamlanmış kayıtların onaylanabilmesi için
             {
-                item.Status = "Onaylandı";// admin onahy işlemi
+                item.Status = "Onaylandı"; // admin onay işlemi
                 item.IsApproved = true; // Onaylandı olarak işaretliyoruz
 
                 db.SaveChanges();
@@ -375,31 +567,39 @@ namespace PersonalAgendaSystem.Controllers
             return RedirectToAction("Index");
         }
         // CALENDAR
-        public ActionResult Calendar()
+        public ActionResult Calendar(int? year, int? month)
         {
-            if (Session["UserID"] == null)
+            ActionResult redirect = RedirectIfNotLoggedIn();
+            if (redirect != null)
             {
-                return RedirectToAction("Login", "Home");
+                return redirect;
             }
 
             DateTime today = DateTime.Today;
 
-            int year = today.Year;
-            int month = today.Month;
-            int daysInMonth = DateTime.DaysInMonth(year, month);
+            int selectedYear = year ?? today.Year;
+            int selectedMonth = month ?? today.Month;
+            int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
 
-            DateTime firstDay = new DateTime(year, month, 1);
+            DateTime firstDay = new DateTime(selectedYear, selectedMonth, 1);
             int startDay = (int)firstDay.DayOfWeek;
             int startOffset = startDay == 0 ? 6 : startDay - 1;
 
-            ViewBag.Year = year;
-            ViewBag.Month = month;
-            ViewBag.MonthName = today.ToString("MMMM"); // Ay adını göstermek için
+            DateTime previousMonth = firstDay.AddMonths(-1);
+            DateTime nextMonth = firstDay.AddMonths(1);
+
+            ViewBag.Year = selectedYear;
+            ViewBag.Month = selectedMonth;
+            ViewBag.MonthName = firstDay.ToString("MMMM"); // Ay adını göstermek için
+            ViewBag.PreviousYear = previousMonth.Year;
+            ViewBag.PreviousMonth = previousMonth.Month;
+            ViewBag.NextYear = nextMonth.Year;
+            ViewBag.NextMonth = nextMonth.Month;
 
             ViewBag.DaysInMonth = daysInMonth;
             ViewBag.StartOffset = startOffset;
 
-            int userId = Convert.ToInt32(Session["UserID"]);
+            int userId = CurrentUserId();
             string role = Session["Role"].ToString();
 
             List<AgendaItems> calendarItems;
