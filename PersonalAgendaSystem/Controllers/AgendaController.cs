@@ -577,16 +577,17 @@ namespace PersonalAgendaSystem.Controllers
 
             DateTime today = DateTime.Today;
 
-            int selectedYear = year ?? today.Year;
-            int selectedMonth = month ?? today.Month;
+            int selectedYear = year ?? today.Year; // Eğer year parametresi null ise, bugünün yılını kullan
+            int selectedMonth = month ?? today.Month; // Eğer month parametresi null ise, bugünün ayını kullan
             int daysInMonth = DateTime.DaysInMonth(selectedYear, selectedMonth);
 
             DateTime firstDay = new DateTime(selectedYear, selectedMonth, 1);
             int startDay = (int)firstDay.DayOfWeek;
             int startOffset = startDay == 0 ? 6 : startDay - 1;
 
-            DateTime previousMonth = firstDay.AddMonths(-1);
-            DateTime nextMonth = firstDay.AddMonths(1);
+
+            DateTime previousMonth = firstDay.AddMonths(-1); // Bir önceki ayın ilk günü
+            DateTime nextMonth = firstDay.AddMonths(1);// Bir sonraki ayın ilk günü
 
             ViewBag.Year = selectedYear;
             ViewBag.Month = selectedMonth;

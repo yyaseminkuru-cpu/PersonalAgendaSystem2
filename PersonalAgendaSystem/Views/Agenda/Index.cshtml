@@ -115,7 +115,7 @@ else
 
                         @Html.ActionLink("Sil", "Delete", "Agenda", new { id = item.AgendaItemId }, new { @class = "btn btn-danger btn-sm" })
 
-                        @if (item.Status != "Tamamlandı" && item.Status != "Onaylandı")
+                        @if (item.Status != "Tamamlandı" && item.Status != "Onaylandı" && item.Status != "İptal Edildi")
                         {
                             @Html.ActionLink("Tamamla", "Complete", "Agenda", new { id = item.AgendaItemId }, new { @class = "btn btn-primary btn-sm ms-1" })
                         }
@@ -127,6 +127,7 @@ else
                     </td>
                 </tr>
             }
+
         </tbody>
     </table>
 }
