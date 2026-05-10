@@ -215,8 +215,6 @@ namespace PersonalAgendaSystem.Controllers
 
             ValidateAgendaItem(item, categoryId);
 
-            ValidateAgendaItem(item, categoryId);
-
             if (ModelState.IsValid)
             {
                 int userId = CurrentUserId();
