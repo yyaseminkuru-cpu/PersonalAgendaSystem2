@@ -48,6 +48,9 @@
         </td>
     </tr>
 </table>
+@if (Model.IsApproved == false)
+{
+    @Html.ActionLink("Düzenle", "Edit", "Agenda", new { id = Model.AgendaItemId }, new { @class = "btn btn-warning" })// Onaylanmamış görevler düzenlenebilir
+}
 
-@Html.ActionLink("Düzenle", "Edit", "Agenda", new { id = Model.AgendaItemId }, new { @class = "btn btn-warning" })
 @Html.ActionLink("Listeye Dön", "Index", "Agenda", null, new { @class = "btn btn-secondary ms-2" })

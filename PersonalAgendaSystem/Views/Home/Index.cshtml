@@ -1,33 +1,92 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Ana Sayfa";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<section class="home-hero">
+    <div class="home-hero-content">
+        <span class="home-badge">Kişisel planlama sistemi</span>
+
+        <h1>Kişisel Görev ve Ajanda Takip Sistemi</h1>
+
+        <p>
+            Görevlerinizi, etkinliklerinizi ve günlük planlarınızı tek ekranda yönetin.
+            Tarihe göre takip edin, tamamlanan işleri admin onay süreciyle kontrol altında tutun.
+        </p>
+
+        <div class="home-actions">
+            @Html.ActionLink("Giriş Yap", "Login", "Home", null, new { @class = "btn btn-primary btn-lg" })
+            @Html.ActionLink("Görevleri Gör", "Index", "Agenda", null, new { @class = "btn btn-outline-light btn-lg" })
+        </div>
+    </div>
+</section>
+
+<section class="home-section">
+    <div class="home-section-title">
+        <span>Öne çıkan özellikler</span>
+        <h2>Ajandanızı daha düzenli yönetin</h2>
+    </div>
 
     <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+        <div class="col-md-4 mb-3">
+            <div class="feature-card">
+                <div class="feature-number">01</div>
+                <h4>Görev Yönetimi</h4>
+                <p>
+                    Görev ve etkinliklerinizi ekleyebilir, düzenleyebilir, silebilir
+                    ve durumlarını kolayca takip edebilirsiniz.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="feature-card">
+                <div class="feature-number">02</div>
+                <h4>Takvim Görünümü</h4>
+                <p>
+                    Başlangıç ve bitiş tarihleri olan ajanda kayıtları, takvim üzerinde
+                    ilgili tüm günlerde görüntülenir.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="feature-card">
+                <div class="feature-number">03</div>
+                <h4>Admin Onayı</h4>
+                <p>
+                    Kullanıcı tamamlandı yaptığı görevleri admin onaylar.
+                    Onaylanan kayıtlar düzenlemeye kapatılır.
+                </p>
+            </div>
+        </div>
     </div>
-</main>
+</section>
+
+<section class="home-section home-process">
+    <div class="home-section-title">
+        <span>Sistem akışı</span>
+        <h2>Basit ve kontrollü görev süreci</h2>
+    </div>
+
+    <div class="process-grid">
+        <div class="process-item">
+            <strong>1</strong>
+            <p>Kullanıcı görev veya etkinlik oluşturur.</p>
+        </div>
+
+        <div class="process-item">
+            <strong>2</strong>
+            <p>Görevler liste ve takvim görünümünde takip edilir.</p>
+        </div>
+
+        <div class="process-item">
+            <strong>3</strong>
+            <p>Kullanıcı görevi tamamlandı olarak işaretler.</p>
+        </div>
+
+        <div class="process-item">
+            <strong>4</strong>
+            <p>Admin tamamlanan görevi onaylayarak süreci bitirir.</p>
+        </div>
+    </div>
+</section>

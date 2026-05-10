@@ -15,12 +15,7 @@ namespace PersonalAgendaSystem.Controllers
 
         public ActionResult Index()
         {
-            if (Session["UserID"] == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            return RedirectToAction("Index", "Agenda");
+            return View();
         }
 
         // Login sayfasını açan GET metodu
