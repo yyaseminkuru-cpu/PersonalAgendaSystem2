@@ -5,9 +5,7 @@
 <section class="home-hero">
     <div class="home-hero-content">
         <span class="home-badge">Kişisel planlama sistemi</span>
-
         <h1>Kişisel Görev ve Ajanda Takip Sistemi</h1>
-
         <p>
             Görevlerinizi, etkinliklerinizi ve günlük planlarınızı tek ekranda yönetin.
             Tarihe göre takip edin, tamamlanan işleri admin onay süreciyle kontrol altında tutun.
@@ -15,7 +13,52 @@
 
         <div class="home-actions">
             @Html.ActionLink("Giriş Yap", "Login", "Home", null, new { @class = "btn btn-primary btn-lg" })
-            @Html.ActionLink("Görevleri Gör", "Index", "Agenda", null, new { @class = "btn btn-outline-light btn-lg" })
+            @Html.ActionLink("Görevleri Gör", "Index", "Agenda", null, new { @class = "btn btn-light btn-lg" })
+        </div>
+
+        <div class="home-stats">
+            <div>
+                <strong>Rol</strong>
+                <span>Admin / Kullanıcı</span>
+            </div>
+            <div>
+                <strong>Takip</strong>
+                <span>Liste ve takvim</span>
+            </div>
+            <div>
+                <strong>Onay</strong>
+                <span>Admin kontrolü</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="home-preview">
+        <div class="preview-top">
+            <span>Bugünün Planı</span>
+            <strong>3 görev</strong>
+        </div>
+
+        <div class="preview-task preview-task-green">
+            <span>Ders çalışma</span>
+            <em>Onaylandı</em>
+        </div>
+
+        <div class="preview-task preview-task-blue">
+            <span>Proje ekranları</span>
+            <em>Devam Ediyor</em>
+        </div>
+
+        <div class="preview-task preview-task-yellow">
+            <span>Sunum hazırlığı</span>
+            <em>Onay Bekliyor</em>
+        </div>
+
+        <div class="preview-calendar">
+            <span>Pzt</span>
+            <span>Sal</span>
+            <span class="active-day">Çar</span>
+            <span>Per</span>
+            <span>Cum</span>
         </div>
     </div>
 </section>
