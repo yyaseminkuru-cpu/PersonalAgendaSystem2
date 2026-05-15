@@ -8,7 +8,7 @@
     <title>@ViewBag.Title - Görev Takip Sistemi</title>
 
     @Styles.Render("~/Content/css")
-    <link href="@Url.Content("~/Content/Site.css?v=8")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Site.css?v=10")" rel="stylesheet" type="text/css" />
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
@@ -26,6 +26,7 @@
                     @if (Session["UserID"] == null)
                     {
                         <li>@Html.ActionLink("Giriş", "Login", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Kayıt Ol", "Register", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     }
                     else
                     {

@@ -51,6 +51,31 @@ namespace PersonalAgendaSystem.Controllers
             return item.Users != null && item.Users.UserID == CurrentUserId();
         }
 
+        private void UpdateExpiredAgendaItems()
+        {
+            DateTime now = DateTime.Now;
+
+            var expiredItems = db.AgendaItems
+                                 .Where(x =>
+                                     x.IsActive == true &&
+                                     x.EndDate < now &&
+                                     x.Status != "Tamamlandı" &&
+                                     x.Status != "Onaylandı" &&
+                                     x.Status != "İptal Edildi" &&
+                                     x.Status != "Süresi Geçti")
+                                 .ToList();
+
+            foreach (var item in expiredItems)
+            {
+                item.Status = "Süresi Geçti";
+            }
+
+            if (expiredItems.Count > 0)
+            {
+                db.SaveChanges();
+            }
+        }
+
         private ActionResult RedirectIfNotLoggedIn()
         {
             if (!IsLoggedIn())
@@ -98,6 +123,11 @@ namespace PersonalAgendaSystem.Controllers
                 ModelState.AddModelError("EndDate", "Bitiş tarihi seçiniz.");
             }
 
+            if (item.EndDate != DateTime.MinValue && item.EndDate.Date < DateTime.Today)
+            {
+                ModelState.AddModelError("EndDate", "Geçmiş tarihe görev eklenemez.");
+            }
+
             if (item.StartDate != DateTime.MinValue &&
                 item.EndDate != DateTime.MinValue &&
                 item.EndDate < item.StartDate)
@@ -118,6 +148,8 @@ namespace PersonalAgendaSystem.Controllers
             {
                 return redirect;
             }
+
+            UpdateExpiredAgendaItems();
 
             // Session içindeki kullanıcı ID'sini alıyoruz
             int userId = CurrentUserId();
@@ -572,6 +604,8 @@ namespace PersonalAgendaSystem.Controllers
             {
                 return redirect;
             }
+
+            UpdateExpiredAgendaItems();
 
             DateTime today = DateTime.Today;
 

@@ -1,0 +1,66 @@
+@{
+    ViewBag.Title = "Kayit Ol";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card auth-card">
+                <div class="card-header bg-success text-white text-center">
+                    <h3 class="mb-0">Yeni Kullan&#305;c&#305; Kayd&#305;</h3>
+                </div>
+
+                <div class="card-body">
+                    <h4 class="text-center mb-4">Kay&#305;t Ol</h4>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewBag.Error
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("Register", "Home", FormMethod.Post))
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Ad Soyad</label>
+                            <input type="text" name="fullName" class="form-control" placeholder="Ad&#305;n&#305;z&#305; ve soyad&#305;n&#305;z&#305; giriniz" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Kullan&#305;c&#305; Ad&#305;</label>
+                            <input type="text" name="userName" class="form-control" placeholder="Kullan&#305;c&#305; ad&#305;n&#305;z&#305; giriniz" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">E-posta</label>
+                            <input type="email" name="email" class="form-control" placeholder="E-posta adresinizi giriniz" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">&#350;ifre</label>
+                            <input type="password" name="password" class="form-control" placeholder="&#350;ifrenizi giriniz" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">&#350;ifre Tekrar</label>
+                            <input type="password" name="confirmPassword" class="form-control" placeholder="&#350;ifrenizi tekrar giriniz" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">
+                            Kay&#305;t Ol
+                        </button>
+                    }
+
+                    <hr />
+
+                    <div class="text-center">
+                        <a href="@Url.Action("Login", "Home")" class="text-decoration-none fw-bold">
+                            Zaten hesab&#305;n&#305;z var m&#305;? Giri&#351; yap&#305;n
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

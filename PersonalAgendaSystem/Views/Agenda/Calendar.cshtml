@@ -73,25 +73,17 @@
                                 {
                                     string btnClass = "calendar-item ";
 
-                                    if (item.Status == "Bekliyor")
+                                    if (item.Priority == "Acil")
                                     {
-                                        btnClass += "item-waiting";
+                                        btnClass += "item-priority-high";
                                     }
-                                    else if (item.Status == "Devam Ediyor")
+                                    else if (item.Priority == "Aktif")
                                     {
-                                        btnClass += "item-progress";
+                                        btnClass += "item-priority-medium";
                                     }
-                                    else if (item.Status == "Tamamlandı")
+                                    else if (item.Priority == "Bekleyebilir")
                                     {
-                                        btnClass += "item-completed";
-                                    }
-                                    else if (item.Status == "Onaylandı")
-                                    {
-                                        btnClass += "item-approved";
-                                    }
-                                    else if (item.Status == "İptal Edildi")
-                                    {
-                                        btnClass += "item-cancelled";
+                                        btnClass += "item-priority-low";
                                     }
                                     else
                                     {

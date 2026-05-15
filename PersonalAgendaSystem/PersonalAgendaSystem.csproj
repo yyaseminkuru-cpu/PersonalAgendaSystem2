@@ -316,6 +316,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Home\Register.cshtml" />
     <Content Include="Views\Agenda\Index.cshtml" />
     <Content Include="Views\Agenda\Create.cshtml" />
     <Content Include="Views\Agenda\Details.cshtml" />

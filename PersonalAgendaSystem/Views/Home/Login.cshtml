@@ -27,6 +27,13 @@
                         </div>
                     }
 
+                    @if (ViewBag.Success != null)
+                    {
+                        <div class="alert alert-success">
+                            @ViewBag.Success
+                        </div>
+                    }
+
                     @using (Html.BeginForm("Login", "Home", FormMethod.Post))
                     {
                         <div class="mb-3">
@@ -43,6 +50,10 @@
                             Giriş Yap
                         </button>
                     }
+
+                    <div class="text-center mt-3">
+                        @Html.ActionLink("Hesabınız yok mu? Kayıt olun", "Register", "Home", null, new { @class = "text-decoration-none fw-bold" })
+                    </div>
 
                     <hr />
 

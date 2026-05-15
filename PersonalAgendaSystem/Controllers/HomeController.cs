@@ -18,8 +18,7 @@ namespace PersonalAgendaSystem.Controllers
             return View();
         }
 
-        // Login sayfasını açan GET metodu
-        // Kullanıcı ilk giriş yaptığında bu çalışır
+        // Kullanıcı giriş sayfasını açmak istediğinde bu metod çalışır. Eğer kullanıcı zaten giriş yapmışsa tekrar login ekranı göstermiyoruz, görev listesine yönlendiriyoruz. Giriş yapmamışsa login sayfası açılır.
         public ActionResult Login()
         {
             if (Session["UserID"] != null)
@@ -28,6 +27,73 @@ namespace PersonalAgendaSystem.Controllers
             }
 
             return View();
+        }
+
+        public ActionResult Register()
+        {
+            if (Session["UserID"] != null)
+            {
+                return RedirectToAction("Index", "Agenda");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Register(string fullName, string userName, string email, string password, string confirmPassword)
+        {
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                ViewBag.Error = "Ad soyad boş bırakılamaz.";
+                return View();
+            }
+
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                ViewBag.Error = "Kullanıcı adı boş bırakılamaz.";
+                return View();
+            }
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ViewBag.Error = "E-posta boş bırakılamaz.";
+                return View();
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.Error = "Şifre boş bırakılamaz.";
+                return View();
+            }
+
+            if (password != confirmPassword)
+            {
+                ViewBag.Error = "Şifreler aynı olmalıdır.";
+                return View();
+            }
+
+            var existingUser = db.Users
+                                 .FirstOrDefault(x => x.Email == email || x.UserName == userName);
+
+            if (existingUser != null)
+            {
+                ViewBag.Error = "Bu e-posta veya kullanıcı adı zaten kullanılıyor.";
+                return View();
+            }
+
+            Users newUser = new Users();
+            newUser.FullName = fullName;
+            newUser.UserName = userName;
+            newUser.Email = email;
+            newUser.Password = password;
+            newUser.Role = "Kullanici";
+            newUser.IsActive = true;
+
+            db.Users.Add(newUser);
+            db.SaveChanges();
+
+            ViewBag.Success = "Kaydınız oluşturuldu. Şimdi giriş yapabilirsiniz.";
+            return View("Login");
         }
 
         // Kullanıcı form gönderdiğinde çalışan POST metodu
@@ -40,7 +106,7 @@ namespace PersonalAgendaSystem.Controllers
             // kullanıcı aktif mi?
             // kontrol ediyoruz
 
-            var user = db.Users
+            var user = db.Users    //Users tablosunda girilen e-posta ve şifreye sahip, aktif olan kullanıcı aranıyor. FirstOrDefault eşleşen ilk kullanıcıyı getirir. Kullanıcı yoksa null döner.
                          .FirstOrDefault(x =>
                              x.Email == username &&  // e posta ile giriş yapıyoruz.
                              x.Password == password &&
@@ -85,6 +151,14 @@ namespace PersonalAgendaSystem.Controllers
 
             // Kullanıcıyı tekrar login sayfasına gönderir
             return RedirectToAction("Login");
+            
+            
+            //HomeController giriş, kayıt ve çıkış işlemlerini yönetiyor.
+            //Login işleminde Users tablosunda e-posta, şifre ve IsActive kontrolü yapılıyor.
+            //Kullanıcı bulunursa UserID, FullName ve Role bilgileri Session’a kaydediliyor.
+            //Bu Session bilgileri diğer controller’larda yetki ve kullanıcı kontrolü için kullanılıyor.
+            //Register işleminde yeni kullanıcı Users tablosuna Kullanici rolüyle ve aktif olarak ekleniyor.
+            //Logout işleminde Session temizleniyor.
         }
     }
 }

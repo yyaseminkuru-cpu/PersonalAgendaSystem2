@@ -276,6 +276,39 @@ textarea:focus {
     background: #eef6ff;
 }
 
+.app-table {
+    min-width: 1180px;
+}
+
+.actions-column {
+    min-width: 230px;
+    width: 230px;
+}
+
+.action-buttons {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(2, minmax(82px, 1fr));
+    max-width: 210px;
+}
+
+.action-buttons .btn {
+    margin: 0;
+    min-width: 82px;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.filter-actions {
+    gap: 10px;
+}
+
+.filter-actions .btn {
+    margin: 0;
+}
+
 .table thead th {
     background: #eaf0f8;
     border-bottom: 1px solid var(--app-border);
@@ -442,6 +475,24 @@ textarea:focus {
     background: #334155;
 }
 
+.item-priority-high {
+    background: #dc3545;
+}
+
+.item-priority-medium {
+    background: #f59e0b;
+    color: #152033;
+}
+
+.item-priority-medium:hover,
+.item-priority-medium:focus {
+    color: #152033;
+}
+
+.item-priority-low {
+    background: #12966f;
+}
+
 .app-footer {
     border-top: 1px solid var(--app-border);
     color: var(--app-muted);
@@ -474,6 +525,15 @@ textarea:focus {
 
     .btn {
         margin-bottom: 6px;
+    }
+
+    .action-buttons .btn,
+    .filter-actions .btn {
+        margin-bottom: 0;
+    }
+
+    .action-buttons {
+        max-width: none;
     }
 }
 

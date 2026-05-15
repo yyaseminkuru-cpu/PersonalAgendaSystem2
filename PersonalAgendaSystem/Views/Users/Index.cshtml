@@ -50,7 +50,7 @@
                 new { @class = "form-control" })
         </div>
 
-        <div class="col-md-5 d-flex align-items-end">
+        <div class="col-md-5 d-flex align-items-end filter-actions">
             <button type="submit" class="btn btn-primary me-2">Filtrele</button>
             @Html.ActionLink("Temizle", "Index", "Users", null, new { @class = "btn btn-secondary" })
         </div>
@@ -73,7 +73,7 @@ else
                 <th>E-posta</th>
                 <th>Rol</th>
                 <th>Durum</th>
-                <th>Islemler</th>
+                <th class="actions-column">Islemler</th>
             </tr>
         </thead>
         <tbody>
@@ -94,14 +94,16 @@ else
                             <span class="badge bg-secondary">Pasif</span>
                         }
                     </td>
-                    <td>
-                        @Html.ActionLink("Detay", "Details", "Users", new { id = item.UserID }, new { @class = "btn btn-info btn-sm" })
-                        <a href="@Url.Action("Edit", "Users", new { id = item.UserID })" class="btn btn-warning btn-sm mx-1">Duzenle</a>
+                    <td class="actions-column">
+                        <div class="action-buttons d-flex flex-nowrap">
+                            @Html.ActionLink("Detay", "Details", "Users", new { id = item.UserID }, new { @class = "btn btn-info btn-sm" })
+                            <a href="@Url.Action("Edit", "Users", new { id = item.UserID })" class="btn btn-warning btn-sm">Duzenle</a>
 
-                        @if (item.IsActive)
-                        {
-                            @Html.ActionLink("Pasife Al", "Delete", "Users", new { id = item.UserID }, new { @class = "btn btn-danger btn-sm" })
-                        }
+                            @if (item.IsActive)
+                            {
+                                @Html.ActionLink("Pasife Al", "Delete", "Users", new { id = item.UserID }, new { @class = "btn btn-danger btn-sm" })
+                            }
+                        </div>
                     </td>
                 </tr>
             }
