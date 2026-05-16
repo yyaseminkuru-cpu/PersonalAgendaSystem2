@@ -17,7 +17,7 @@ namespace PersonalAgendaSystem.Controllers
             base.OnActionExecuting(filterContext);
         }
 
-        private bool IsAdmin()
+        private bool IsAdmin() //Session içindeki Role bilgisine bakýyoruz. Role Admin ise kullanýcý yönetimi iþlemlerine izin veriyoruz.
         {
             return Session["Role"] != null && Session["Role"].ToString() == "Admin";
         }
@@ -34,7 +34,7 @@ namespace PersonalAgendaSystem.Controllers
                 return RedirectToAction("Index", "Agenda");
             }
 
-            return null;
+            return null;  //Kullanýcý giriþ yapmamýþsa Login sayfasýna gider. Giriþ yapmýþ ama admin deðilse Agenda sayfasýna yönlendirilir.
         }
 
         private void FillRoleList(string selectedRole = null)
@@ -74,7 +74,7 @@ namespace PersonalAgendaSystem.Controllers
             }
         }
 
-        public ActionResult Index(string search, string role)
+        public ActionResult Index(string search, string role) //Kullanýcý listesini getirir. Admin bu ekranda kullanýcýlarý arayabilir ve role göre filtreleyebilir.
         {
             ActionResult redirect = RedirectIfNotAdmin();
             if (redirect != null)
@@ -82,28 +82,28 @@ namespace PersonalAgendaSystem.Controllers
                 return redirect;
             }
 
-            var users = db.Users.AsQueryable();
+            var users = db.Users.AsQueryable(); //Kullanýcýlarý veritabanýndan çeker ve sorgulanabilir hale getirir.
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 users = users.Where(x =>
                     x.FullName.Contains(search) ||
                     x.UserName.Contains(search) ||
-                    x.Email.Contains(search));
+                    x.Email.Contains(search)); //Kullanýcýnýn adý, kullanýcý adý veya e-postasý içinde arama yapýlýr.
             }
 
             if (!string.IsNullOrWhiteSpace(role))
             {
-                users = users.Where(x => x.Role == role);
+                users = users.Where(x => x.Role == role); //Kullanýcýlarýn rolüne göre filtreleme yapýlýr. Admin veya Kullanici olarak filtreleme yapýlabilir.
             }
 
             ViewBag.Search = search;
             ViewBag.Role = role;
 
-            return View(users.OrderBy(x => x.FullName).ToList());
+            return View(users.OrderBy(x => x.FullName).ToList()); //Kullanýcýlar tam adý sýrasýna göre sýralanýr ve liste olarak görüntülenir.
         }
 
-        [HttpGet]
+        [HttpGet] //Yeni kullanýcý oluþturma sayfasýný getirir. Admin bu sayfada yeni bir kullanýcý ekleyebilir.
         public ActionResult Create()
         {
             ActionResult redirect = RedirectIfNotAdmin();
@@ -116,7 +116,7 @@ namespace PersonalAgendaSystem.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost] //Yeni kullanýcý oluþturma iþlemini gerçekleþtirir. Admin tarafýndan girilen kullanýcý bilgileri doðrulanýr ve geçerliyse veritabanýna kaydedilir.
         [ValidateAntiForgeryToken]
         public ActionResult Create(Users user)
         {
@@ -142,7 +142,7 @@ namespace PersonalAgendaSystem.Controllers
             return View(user);
         }
 
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id) //Kullanýcý detay sayfasýný getirir. Admin bu sayfada kullanýcýnýn detay bilgilerini görebilir.
         {
             ActionResult redirect = RedirectIfNotAdmin();
             if (redirect != null)
@@ -165,7 +165,7 @@ namespace PersonalAgendaSystem.Controllers
             return View(user);
         }
 
-        [HttpGet]
+        [HttpGet] //Kullanýcý düzenleme sayfasýný getirir. Admin bu sayfada kullanýcýnýn bilgilerini düzenleyebilir.
         public ActionResult Edit(int? id)
         {
             ActionResult redirect = RedirectIfNotAdmin();
@@ -190,7 +190,7 @@ namespace PersonalAgendaSystem.Controllers
             return View(user);
         }
 
-        [HttpPost]
+        [HttpPost] //Kullanýcý düzenleme iþlemini gerçekleþtirir. Admin tarafýndan girilen kullanýcý bilgileri doðrulanýr ve geçerliyse veritabanýnda güncellenir.
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Users user)
         {
@@ -227,7 +227,7 @@ namespace PersonalAgendaSystem.Controllers
             return View(user);
         }
 
-        [HttpGet]
+        [HttpGet] //Silme onay ekranýný açar.
         public ActionResult Delete(int? id)
         {
             ActionResult redirect = RedirectIfNotAdmin();
@@ -251,7 +251,7 @@ namespace PersonalAgendaSystem.Controllers
             return View(user);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Delete")] //Kullanýcý silme iþlemini gerçekleþtirir. Admin tarafýndan onaylanan kullanýcý silinmek yerine pasif hale getirilir.(soft delete) Böylece kullanýcý veritabanýnda kalýr ancak aktif olarak kullanýlamaz.
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int UserID)
         {
@@ -275,3 +275,9 @@ namespace PersonalAgendaSystem.Controllers
         }
     }
 }
+//UsersController admin kullanýcý yönetimi için yazýldý.
+//Önce kullanýcýnýn admin olup olmadýðý Session’daki Role bilgisiyle kontrol ediliyor.
+//Admin deðilse bu sayfalara eriþemiyor.
+//Index metodunda kullanýcýlar listeleniyor, arama ve role göre filtreleme yapýlýyor.
+//Create ile yeni kullanýcý ekleniyor, Edit ile kullanýcý bilgileri güncelleniyor, Details ile detaylarý gösteriliyor.
+//Delete iþleminde fiziksel silme yapýlmýyor, IsActive false yapýlarak soft delete uygulanýyor.

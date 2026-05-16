@@ -26,7 +26,7 @@ namespace PersonalAgendaSystem.Controllers
             return Session["UserID"] != null;
         }
 
-        private bool IsAdmin()
+        private bool IsAdmin() // Kullanıcının admin olup olmadığını kontrol eden yardımcı metot
         {
             return Session["Role"] != null && Session["Role"].ToString() == "Admin";
         }
@@ -37,6 +37,10 @@ namespace PersonalAgendaSystem.Controllers
         }
 
         private bool CanAccessAgendaItem(AgendaItems item)
+        //Bu metod kullanıcının bir göreve erişip erişemeyeceğini kontrol ediyor.
+        //Admin tüm aktif görevlere erişebilir.
+        //Normal kullanıcı ise sadece kendi UserID’sine bağlı görevlere erişebilir.
+
         {
             if (item == null || item.IsActive == false)
             {
@@ -52,6 +56,7 @@ namespace PersonalAgendaSystem.Controllers
         }
 
         private void UpdateExpiredAgendaItems()
+        // Bu metod, süresi geçmiş görevlerin durumunu "Süresi Geçti" olarak günceller.
         {
             DateTime now = DateTime.Now;
 
@@ -76,7 +81,7 @@ namespace PersonalAgendaSystem.Controllers
             }
         }
 
-        private ActionResult RedirectIfNotLoggedIn()
+        private ActionResult RedirectIfNotLoggedIn() //Kullanıcı giriş yapmamışsa Login sayfasına yönlendiriyoruz. Böylece görev ekranlarına direkt URL ile girilemez.
         {
             if (!IsLoggedIn())
             {
@@ -87,6 +92,7 @@ namespace PersonalAgendaSystem.Controllers
         }
 
         private void ValidateAgendaItem(AgendaItems item, int? categoryId)
+        // Bu metod, görev oluşturulurken veya düzenlenirken girilen bilgilerin doğruluğunu kontrol eder.
         {
             if (string.IsNullOrWhiteSpace(item.Title))
             {
@@ -136,9 +142,9 @@ namespace PersonalAgendaSystem.Controllers
             }
         }
 
-        // Kullanıcı login olduktan sonra ilk buraya gelecek
+        
         public ActionResult Index(string priority, string status, DateTime? filterDate)
-
+        //Görev listesi ekranını açar. Öncelik, durum ve tarihe göre filtreleme yapabilir.
 
         {
             // Eğer kullanıcı giriş yapmadıysa
@@ -189,7 +195,7 @@ namespace PersonalAgendaSystem.Controllers
             if (!string.IsNullOrEmpty(status))
             {
                 agendaList = agendaList
-                             .Where(x => x.Status == status)
+                             .Where(x => x.Status == status) // Durumu eşit olan kayıtları alıyoruz
                              .ToList();
             }
             // Eğer filterDate parametresi null değilse, yani bir tarih seçilmişse
@@ -208,7 +214,7 @@ namespace PersonalAgendaSystem.Controllers
             ViewBag.FilterDate = filterDate;
 
             agendaList = agendaList
-             .OrderBy(x => x.StartDate)
+             .OrderBy(x => x.StartDate)  // Ajanda kayıtlarını başlangıç tarihine göre sıralıyoruz
              .ToList();
 
             ViewBag.TaskTitles = agendaList
@@ -221,7 +227,7 @@ namespace PersonalAgendaSystem.Controllers
         }
 
         // CREATE - GET
-        [HttpGet]
+        [HttpGet]  // Yeni bir görev oluşturma sayfasını açar
         public ActionResult Create()
         {
             ActionResult redirect = RedirectIfNotLoggedIn();
@@ -235,7 +241,7 @@ namespace PersonalAgendaSystem.Controllers
         }
 
         // CREATE - POST
-        [HttpPost]
+        [HttpPost]  // Yeni bir görev oluşturmak için formdan gelen verileri alır, doğrular ve kaydeder
         [ValidateAntiForgeryToken]
         public ActionResult Create(AgendaItems item, int? categoryId)
         {
@@ -306,7 +312,7 @@ namespace PersonalAgendaSystem.Controllers
             return View(item); // bulduğumuz kaydı View'a gönderiyoruz
         }
         // EDIT - GET
-        [HttpGet]
+        [HttpGet] // Var olan bir görevi düzenleme sayfasını açar
         public ActionResult Edit(int? id) // id null olabilir diye nullable yaptık
         {
             ActionResult redirect = RedirectIfNotLoggedIn();
@@ -343,7 +349,7 @@ namespace PersonalAgendaSystem.Controllers
         }
 
         // EDIT - POST
-        [HttpPost]
+        [HttpPost]  // Var olan bir görevi düzenlemek için formdan gelen verileri alır, doğrular ve kaydeder
         [ValidateAntiForgeryToken]
         public ActionResult Edit(AgendaItems item, int? categoryId)
         {
@@ -426,7 +432,7 @@ namespace PersonalAgendaSystem.Controllers
             return View(item);
         }
         // DELETE - POST
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]  // Silme işlemi için formdan gelen verileri alır ve kaydı pasif yaparak siler (soft delete)
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int AgendaItemId)
         {
@@ -459,7 +465,7 @@ namespace PersonalAgendaSystem.Controllers
         // COMPLETE - GET
 
 
-        [HttpGet]
+        [HttpGet]  // Bir görevi tamamlanmış olarak işaretleme sayfasını açar
         public ActionResult Complete(int? id)
         {
             ActionResult redirect = RedirectIfNotLoggedIn();
@@ -489,7 +495,7 @@ namespace PersonalAgendaSystem.Controllers
         }
 
         // COMPLETE - POST
-        [HttpPost, ActionName("Complete")]
+        [HttpPost, ActionName("Complete")]  // Bir görevi tamamlanmış olarak işaretlemek için formdan gelen verileri alır, doğrular ve kaydeder
         [ValidateAntiForgeryToken]
         public ActionResult CompleteConfirmed(int AgendaItemId)
         {
@@ -559,7 +565,7 @@ namespace PersonalAgendaSystem.Controllers
             return View(item); // Onaylama sayfasına kaydı gönderiyoruz
         }
         // APPROVE - POST
-        [HttpPost, ActionName("Approve")]
+        [HttpPost, ActionName("Approve")]  //Sadece admin kullanabilir. Tamamlandı durumundaki görev admin tarafından onaylanır. Status Onaylandı, IsApproved true yapılır.
         [ValidateAntiForgeryToken]
         public ActionResult ApproveConfirmed(int AgendaItemId)
         {
@@ -660,4 +666,11 @@ namespace PersonalAgendaSystem.Controllers
 
     }
 
-}
+}//AgendaController görev modülünün ana controller’ıdır.
+ //Önce kullanıcının giriş yapıp yapmadığı Session ile kontrol edilir.
+ //Admin tüm görevleri görebilir, normal kullanıcı sadece kendi görevlerini görür.
+ //Listeleme ekranında Where ile filtreleme, OrderBy ile tarih sıralama yapılır.
+ //Create ve Edit işlemlerinde boş alan, tarih ve kategori kontrolleri yapılır.
+ //Delete işleminde kayıt silinmez, IsActive false yapılır.
+ //Complete işleminde görev Tamamlandı olur, Approve işleminde admin görevi Onaylandı yapar.
+ //Calendar metodunda görevler ay bazlı takvimde gösterilir ve önceliğe göre renklendirilir.
