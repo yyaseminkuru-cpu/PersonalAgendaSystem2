@@ -236,7 +236,6 @@
     <Content Include="bin\tr\System.Web.WebPages.Razor.resources.dll" />
     <Content Include="bin\tr\System.Web.WebPages.resources.dll" />
     <Content Include="bin\WebGrease.dll" />
-    <Content Include="Content\App.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
