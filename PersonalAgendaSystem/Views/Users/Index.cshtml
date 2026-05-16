@@ -1,23 +1,23 @@
 @model List<PersonalAgendaSystem.Models.Users>
 
 @{
-    ViewBag.Title = "Kullanici Listesi";
+    ViewBag.Title = "Kullanıcı Listesi";
 }
 
 <div class="page-hero">
     <div>
-        <p class="page-eyebrow">Yonetim paneli</p>
-        <h2>Kullanici Listesi</h2>
-        <p class="page-subtitle">Kullanici hesaplarini, rollerini ve aktiflik durumlarini buradan yonetin.</p>
+        <p class="page-eyebrow">Yönetim paneli</p>
+        <h2>Kullanıcı Listesi</h2>
+        <p class="page-subtitle">Kullanıcı hesaplarını, rollerini ve aktiflik durumlarını buradan yönetin.</p>
     </div>
     <div class="hero-actions">
-        <a href="@Url.Action("Create", "Users")" class="btn btn-success">Yeni Kullanici Ekle</a>
+        <a href="@Url.Action("Create", "Users")" class="btn btn-success">Yeni Kullanıcı Ekle</a>
     </div>
 </div>
 
 <div class="metric-grid">
     <div class="metric-card">
-        <span>Toplam Kullanici</span>
+        <span>Toplam Kullanıcı</span>
         <strong>@(Model == null ? 0 : Model.Count)</strong>
     </div>
     <div class="metric-card">
@@ -35,7 +35,7 @@
     <div class="row mb-3">
         <div class="col-md-4">
             <label class="form-label">Arama</label>
-            <input type="text" name="search" class="form-control" value="@ViewBag.Search" placeholder="Ad, kullanici adi veya e-posta" />
+            <input type="text" name="search" class="form-control" value="@ViewBag.Search" placeholder="Ad, kullanıcı adı veya e-posta" />
         </div>
 
         <div class="col-md-3">
@@ -44,9 +44,9 @@
                 new SelectList(new[]
                 {
                     new SelectListItem { Text = "Admin", Value = "Admin" },
-                    new SelectListItem { Text = "Kullanici", Value = "Kullanici" }
+                    new SelectListItem { Text = "Kullanıcı", Value = "Kullanici" }
                 }, "Value", "Text", ViewBag.Role),
-                "Tum Roller",
+                "Tüm Roller",
                 new { @class = "form-control" })
         </div>
 
@@ -60,7 +60,7 @@
 @if (Model == null || Model.Count == 0)
 {
     <div class="alert alert-warning text-center">
-        Kayitli kullanici bulunamadi.
+        Kayıtlı kullanıcı bulunamadı.
     </div>
 }
 else
@@ -69,7 +69,7 @@ else
         <thead>
             <tr>
                 <th>Ad Soyad</th>
-                <th>Kullanici Adi</th>
+                <th>Kullanıcı Adı</th>
                 <th>E-posta</th>
                 <th>Rol</th>
                 <th>Durum</th>
@@ -97,7 +97,7 @@ else
                     <td class="actions-column">
                         <div class="action-buttons d-flex flex-nowrap">
                             @Html.ActionLink("Detay", "Details", "Users", new { id = item.UserID }, new { @class = "btn btn-info btn-sm" })
-                            <a href="@Url.Action("Edit", "Users", new { id = item.UserID })" class="btn btn-warning btn-sm">Duzenle</a>
+                            <a href="@Url.Action("Edit", "Users", new { id = item.UserID })" class="btn btn-warning btn-sm">Düzenle</a>
 
                             @if (item.IsActive)
                             {

@@ -135,6 +135,7 @@
     <Compile Include="Models\AgendaItems.cs">
       <DependentUpon>AgendaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AgendaItemsMetadata.cs" />
     <Compile Include="Models\AgendaModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -153,10 +154,11 @@
     <Compile Include="Models\Categories.cs">
       <DependentUpon>AgendaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CategoriesMetadata.cs" />
     <Compile Include="Models\Users.cs">
       <DependentUpon>AgendaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ValidationMetadata.cs" />
+    <Compile Include="Models\UsersMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

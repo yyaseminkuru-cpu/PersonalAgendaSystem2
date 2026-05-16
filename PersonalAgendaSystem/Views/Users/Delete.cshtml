@@ -1,13 +1,13 @@
 @model PersonalAgendaSystem.Models.Users
 
 @{
-    ViewBag.Title = "Kullanici Pasife Al";
+    ViewBag.Title = "Kullanıcı Pasife Al";
 }
 
-<h2>Kullanici Pasife Al</h2>
+<h2>Kullanıcı Pasife Al</h2>
 
 <div class="alert alert-warning">
-    Bu kullaniciyi pasife almak istediginize emin misiniz?
+    Bu kullanıcıyı pasife almak istediğinize emin misiniz?
 </div>
 
 <table class="table table-bordered">
@@ -16,7 +16,7 @@
         <td>@Model.FullName</td>
     </tr>
     <tr>
-        <th>Kullanici Adi</th>
+        <th>Kullanıcı Adı</th>
         <td>@Model.UserName</td>
     </tr>
     <tr>
@@ -35,5 +35,5 @@
     @Html.HiddenFor(model => model.UserID)
 
     <button type="submit" class="btn btn-danger">Pasife Al</button>
-    <a href="@Url.Action("Index", "Users")" class="btn btn-secondary ms-2">Vazgec</a>
+    <a href="@Url.Action("Index", "Users")" class="btn btn-secondary ms-2">Vazgeç</a>
 }

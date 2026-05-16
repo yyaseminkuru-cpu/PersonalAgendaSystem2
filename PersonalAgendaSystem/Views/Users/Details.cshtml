@@ -1,10 +1,10 @@
 @model PersonalAgendaSystem.Models.Users
 
 @{
-    ViewBag.Title = "Kullanici Detay";
+    ViewBag.Title = "Kullanıcı Detay";
 }
 
-<h2>Kullanici Detay</h2>
+<h2>Kullanıcı Detay</h2>
 
 <table class="table table-bordered">
     <tr>
@@ -12,7 +12,7 @@
         <td>@Model.FullName</td>
     </tr>
     <tr>
-        <th>Kullanici Adi</th>
+        <th>Kullanıcı Adı</th>
         <td>@Model.UserName</td>
     </tr>
     <tr>
@@ -38,5 +38,5 @@
     </tr>
 </table>
 
-<a href="@Url.Action("Edit", "Users", new { id = Model.UserID })" class="btn btn-warning">Duzenle</a>
-<a href="@Url.Action("Index", "Users")" class="btn btn-secondary ms-2">Listeye Don</a>
+<a href="@Url.Action("Edit", "Users", new { id = Model.UserID })" class="btn btn-warning">Düzenle</a>
+<a href="@Url.Action("Index", "Users")" class="btn btn-secondary ms-2">Listeye Dön</a>

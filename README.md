@@ -27,6 +27,10 @@ Categories
 AgendaItems
 ```
 
+Bu projede `AgendaItems` tablosu gorev kayitlarini temsil eder. Isterlerdeki `Tasks`
+tablosunun karsiligi olarak kullanilmistir. `EndDate` alani da gorevin bitis/teslim
+tarihi, yani `DueDate` mantigi ile kullanilir.
+
 Iliskiler:
 
 ```text
@@ -61,6 +65,7 @@ Sifre: 1234
 - Gorev silme yerine pasife alma
 - Gorev tamamlama
 - Admin gorev onaylama
+- Gorev basligi ve aciklamasina gore arama
 - Oncelik, durum ve tarih filtreleme
 - Tarihe gore siralama
 - Takvim gorunumu
