@@ -140,6 +140,7 @@ namespace PersonalAgendaSystem.Controllers
 
             FillRoleList(user.Role);
             return View(user);
+
         }
 
         public ActionResult Details(int? id) //Kullanýcý detay sayfasýný getirir. Admin bu sayfada kullanýcýnýn detay bilgilerini görebilir.
