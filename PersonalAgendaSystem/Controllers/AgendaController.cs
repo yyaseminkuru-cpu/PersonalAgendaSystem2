@@ -359,6 +359,8 @@ namespace PersonalAgendaSystem.Controllers
                 return redirect;
             }
 
+            ValidateAgendaItem(item, categoryId);
+
             if (ModelState.IsValid)
             {
                 AgendaItems updatedItem = db.AgendaItems.Find(item.AgendaItemId);

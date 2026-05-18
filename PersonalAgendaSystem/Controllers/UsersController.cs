@@ -130,6 +130,15 @@ namespace PersonalAgendaSystem.Controllers
 
             if (ModelState.IsValid)
             {
+                var existingUser = db.Users.FirstOrDefault(x => x.Email == user.Email || x.UserName == user.UserName);
+
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("", "Bu e-posta veya kullanici adi zaten kullaniliyor.");
+                    FillRoleList(user.Role);
+                    return View(user);
+                }
+
                 user.IsActive = true;
 
                 db.Users.Add(user);
@@ -210,6 +219,15 @@ namespace PersonalAgendaSystem.Controllers
                 if (updatedUser == null)
                 {
                     return HttpNotFound();
+                }
+
+                var existingUser = db.Users.FirstOrDefault(x => x.UserID != user.UserID && (x.Email == user.Email || x.UserName == user.UserName));
+
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("", "Bu e-posta veya kullanici adi zaten kullaniliyor.");
+                    FillRoleList(user.Role);
+                    return View(user);
                 }
 
                 updatedUser.FullName = user.FullName;
