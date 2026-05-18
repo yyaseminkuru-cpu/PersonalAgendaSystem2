@@ -1,10 +1,10 @@
 @model PersonalAgendaSystem.Models.Users
 
 @{
-    ViewBag.Title = "Kullanici Duzenle";
+    ViewBag.Title = "Kullanıcı Düzenle";
 }
 
-<h2>Kullanici Duzenle</h2>
+<h2>Kullanıcı Düzenle</h2>
 
 @using (Html.BeginForm())
 {
@@ -19,7 +19,7 @@
     </div>
 
     <div class="mb-3">
-        @Html.LabelFor(model => model.UserName, "Kullanici Adi", new { @class = "form-label" })
+        @Html.LabelFor(model => model.UserName, "Kullanıcı Adı", new { @class = "form-label" })
         @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
     </div>
@@ -31,14 +31,14 @@
     </div>
 
     <div class="mb-3">
-        @Html.LabelFor(model => model.Password, "Sifre", new { @class = "form-label" })
+        @Html.LabelFor(model => model.Password, "Şifre", new { @class = "form-label" })
         @Html.TextBoxFor(model => model.Password, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
     </div>
 
     <div class="mb-3">
         @Html.LabelFor(model => model.Role, "Rol", new { @class = "form-label" })
-        @Html.DropDownListFor(model => model.Role, (SelectList)ViewBag.Roles, "Rol Seciniz", new { @class = "form-control" })
+        @Html.DropDownListFor(model => model.Role, (SelectList)ViewBag.Roles, "Rol Seçiniz", new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
     </div>
 
@@ -48,5 +48,5 @@
     </div>
 
     <button type="submit" class="btn btn-success">Kaydet</button>
-    <a href="@Url.Action("Index", "Users")" class="btn btn-secondary ms-2">Listeye Don</a>
+    <a href="@Url.Action("Index", "Users")" class="btn btn-secondary ms-2">Listeye Dön</a>
 }

@@ -135,6 +135,7 @@
     <Compile Include="Models\AgendaItems.cs">
       <DependentUpon>AgendaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AgendaItemsMetadata.cs" />
     <Compile Include="Models\AgendaModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -153,10 +154,11 @@
     <Compile Include="Models\Categories.cs">
       <DependentUpon>AgendaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CategoriesMetadata.cs" />
     <Compile Include="Models\Users.cs">
       <DependentUpon>AgendaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ValidationMetadata.cs" />
+    <Compile Include="Models\UsersMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +236,6 @@
     <Content Include="bin\tr\System.Web.WebPages.Razor.resources.dll" />
     <Content Include="bin\tr\System.Web.WebPages.resources.dll" />
     <Content Include="bin\WebGrease.dll" />
-    <Content Include="Content\App.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />

@@ -42,7 +42,7 @@ namespace PersonalAgendaSystem.Controllers
             ViewBag.Roles = new SelectList(new[]
             {
                 new SelectListItem { Text = "Admin", Value = "Admin" },
-                new SelectListItem { Text = "Kullanici", Value = "Kullanici" }
+                new SelectListItem { Text = "Kullanıcı", Value = "Kullanici" }
             }, "Value", "Text", selectedRole);
         }
 
@@ -50,27 +50,27 @@ namespace PersonalAgendaSystem.Controllers
         {
             if (string.IsNullOrWhiteSpace(user.FullName))
             {
-                ModelState.AddModelError("FullName", "Ad soyad bos birakilamaz.");
+                ModelState.AddModelError("FullName", "Ad soyad boş bırakılamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.UserName))
             {
-                ModelState.AddModelError("UserName", "Kullanici adi bos birakilamaz.");
+                ModelState.AddModelError("UserName", "Kullanıcı adı boş bırakılamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.Email))
             {
-                ModelState.AddModelError("Email", "E-posta bos birakilamaz.");
+                ModelState.AddModelError("Email", "E-posta boş bırakılamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.Password))
             {
-                ModelState.AddModelError("Password", "Sifre bos birakilamaz.");
+                ModelState.AddModelError("Password", "Şifre boş bırakılamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.Role))
             {
-                ModelState.AddModelError("Role", "Rol seciniz.");
+                ModelState.AddModelError("Role", "Rol seçiniz.");
             }
         }
 

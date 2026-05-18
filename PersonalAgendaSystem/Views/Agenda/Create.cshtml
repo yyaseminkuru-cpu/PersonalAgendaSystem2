@@ -1,15 +1,21 @@
-﻿
-@model PersonalAgendaSystem.Models.AgendaItems
+﻿@model PersonalAgendaSystem.Models.AgendaItems
 
 @{
-    ViewBag.Title = "Yeni Görev Kaydı";
+    ViewBag.Title = "Yeni Görev Ekle";
 }
 
-<h2>Yeni Görev Kaydı</h2>
+<div class="page-hero">
+    <div>
+        <p class="page-eyebrow">Ajanda kaydı</p>
+        <h2>Yeni Görev Ekle</h2>
+        <p class="page-subtitle">Görev, etkinlik veya hatırlatma kaydını buradan oluştur.</p>
+    </div>
+</div>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Create", "Agenda", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
+
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="mb-3">
@@ -20,13 +26,13 @@
 
     <div class="mb-3">
         @Html.LabelFor(model => model.Description, "Açıklama", new { @class = "form-label" })
-        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 3 })
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 4 })
         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
     </div>
 
     <div class="mb-3">
         <label class="form-label">Kategori</label>
-        @Html.DropDownList("categoryId", (SelectList)ViewBag.Categories, "Kategori Seçiniz", new { @class = "form-control" })
+        @Html.DropDownList("categoryId", ViewBag.Categories as SelectList, "Kategori Seçiniz", new { @class = "form-control" })
         @Html.ValidationMessage("categoryId", "", new { @class = "text-danger" })
     </div>
 
@@ -54,12 +60,12 @@
     <div class="mb-3">
         @Html.LabelFor(model => model.Status, "Durum", new { @class = "form-label" })
         @Html.DropDownListFor(model => model.Status,
-            new SelectList(new[] { "Bekliyor", "Devam Ediyor" }),
+            new SelectList(new[] { "Bekliyor", "Devam Ediyor", "İptal Edildi" }),
             "Durum Seçiniz",
             new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
     </div>
 
     <button type="submit" class="btn btn-success">Kaydet</button>
-    @Html.ActionLink("Listeye Dön", "Index", "Agenda", null, new { @class = "btn btn-secondary ms-2" })
+    @Html.ActionLink("Geri Dön", "Index", "Agenda", null, new { @class = "btn btn-secondary" })
 }

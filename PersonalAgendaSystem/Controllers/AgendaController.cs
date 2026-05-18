@@ -142,13 +142,9 @@ namespace PersonalAgendaSystem.Controllers
             }
         }
 
-        
-        public ActionResult Index(string priority, string status, DateTime? filterDate)
-        //Görev listesi ekranını açar. Öncelik, durum ve tarihe göre filtreleme yapabilir.
-
+        // Görev listesi ekranını açar. Arama, öncelik, durum ve tarihe göre filtreleme yapabilir.
+        public ActionResult Index(string search, string priority, string status, DateTime? filterDate)
         {
-            // Eğer kullanıcı giriş yapmadıysa
-            // tekrar login sayfasına yönlendir
             ActionResult redirect = RedirectIfNotLoggedIn();
             if (redirect != null)
             {
@@ -157,27 +153,18 @@ namespace PersonalAgendaSystem.Controllers
 
             UpdateExpiredAgendaItems();
 
-            // Session içindeki kullanıcı ID'sini alıyoruz
             int userId = CurrentUserId();
-
-            // Giriş yapan kullanıcının rolünü alıyoruz
             string role = Session["Role"].ToString();
-
-            // Listeyi tutacak değişken
             List<AgendaItems> agendaList;
 
-            // Eğer kullanıcı Admin ise
             if (role == "Admin")
             {
-                // Tüm ajanda kayıtlarını getir
                 agendaList = db.AgendaItems
-                               .Where(x => x.IsActive == true) // soft delete yapılmış kayıtları göstermemesi için
+                               .Where(x => x.IsActive == true)
                                .ToList();
             }
             else
             {
-                // Normal kullanıcıysa
-                // sadece kendi kayıtlarını getir
                 agendaList = db.AgendaItems
                                .Where(x =>
                                    x.Users.UserID == userId &&
@@ -185,20 +172,29 @@ namespace PersonalAgendaSystem.Controllers
                                .ToList();
             }
 
-            if (!string.IsNullOrEmpty(priority)) // Eğer priority parametresi boş değilse
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                agendaList = agendaList // Önceki sorgudan dönen liste üzerinde filtreleme yapıyoruz
-                             .Where(x => x.Priority == priority) // Önceliği eşit olan kayıtları alıyoruz
-                             .ToList(); // Sonuçları listeye atıyoruz
+                agendaList = agendaList
+                             .Where(x =>
+                                 x.Title.Contains(search) ||
+                                 x.Description.Contains(search))
+                             .ToList();
             }
-            // Benzer şekilde status parametresi için de filtreleme yapıyoruz
+
+            if (!string.IsNullOrEmpty(priority))
+            {
+                agendaList = agendaList
+                             .Where(x => x.Priority == priority)
+                             .ToList();
+            }
+
             if (!string.IsNullOrEmpty(status))
             {
                 agendaList = agendaList
                              .Where(x => x.Status == status) // Durumu eşit olan kayıtları alıyoruz
                              .ToList();
             }
-            // Eğer filterDate parametresi null değilse, yani bir tarih seçilmişse
+
             if (filterDate.HasValue)
             {
                 agendaList = agendaList
@@ -208,7 +204,7 @@ namespace PersonalAgendaSystem.Controllers
                              .ToList();
             }
 
-
+            ViewBag.Search = search;
             ViewBag.Priority = priority;
             ViewBag.Status = status;
             ViewBag.FilterDate = filterDate;
@@ -218,10 +214,9 @@ namespace PersonalAgendaSystem.Controllers
              .ToList();
 
             ViewBag.TaskTitles = agendaList
-                                 .Select(x => x.Title) //her ajanda kaydında sadece title alanını seçer
-                                 .ToList(); 
+                                 .Select(x => x.Title)
+                                 .ToList();
 
-            // Listeyi View'a gönderiyoruz
             return View(agendaList);
 
         }
@@ -251,7 +246,7 @@ namespace PersonalAgendaSystem.Controllers
                 return redirect;
             }
 
-            ValidateAgendaItem(item, categoryId);
+           
 
             if (ModelState.IsValid)
             {
@@ -278,11 +273,17 @@ namespace PersonalAgendaSystem.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Categories = new SelectList(db.Categories.Where(x => x.IsActive == true).ToList(), "CategoryID", "CategoryName", categoryId);
+            ViewBag.Categories = new SelectList(
+                db.Categories.Where(x => x.IsActive == true).ToList(),
+                "CategoryID",
+                "CategoryName",
+                categoryId
+            );
 
             return View(item);
-
         }
+
+
         // DETAILS
         public ActionResult Details(int? id) // id null olabilir diye nullable yaptık
         {
@@ -358,6 +359,7 @@ namespace PersonalAgendaSystem.Controllers
             {
                 return redirect;
             }
+            ValidateAgendaItem(item, categoryId);
 
             ValidateAgendaItem(item, categoryId);
 
@@ -661,8 +663,9 @@ namespace PersonalAgendaSystem.Controllers
             return View(calendarItems);
 
 
-        
+
         }
+
 
 
 
