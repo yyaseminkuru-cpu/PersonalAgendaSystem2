@@ -72,7 +72,7 @@ namespace PersonalAgendaSystem.Controllers
                 return View();
             }
 
-            var existingUser = db.Users
+            var existingUser = db.Users 
                                  .FirstOrDefault(x => x.Email == email || x.UserName == userName);
 
             if (existingUser != null)
@@ -81,12 +81,12 @@ namespace PersonalAgendaSystem.Controllers
                 return View();
             }
 
-            Users newUser = new Users();
+            Users newUser = new Users(); // Yeni kullanıcı nesnesi oluşturuyoruz
             newUser.FullName = fullName;
             newUser.UserName = userName;
             newUser.Email = email;
             newUser.Password = password;
-            newUser.Role = "Kullanici";
+            newUser.Role = "Kullanici"; // Yeni kullanıcıya varsayılan olarak "Kullanici" rolü veriyoruz. Admin rolü manuel olarak verilebilir.
             newUser.IsActive = true;
 
             db.Users.Add(newUser);
@@ -108,12 +108,12 @@ namespace PersonalAgendaSystem.Controllers
 
             var user = db.Users    //Users tablosunda girilen e-posta ve şifreye sahip, aktif olan kullanıcı aranıyor. FirstOrDefault eşleşen ilk kullanıcıyı getirir. Kullanıcı yoksa null döner.
                          .FirstOrDefault(x =>
-                             x.Email == username &&  // e posta ile giriş yapıyoruz.
+                             x.Email == username && //|| x.UserName == username && // e posta ile giriş yapıyoruz. Kullanıcı adıyla giriş yapmak isterseniz bu satırı açabilirsiniz.
                              x.Password == password &&
-                             x.IsActive == true);
+                             x.IsActive == true); // Kullanıcı aktif mi? değilse giriş yapamaz.
 
-            // Eğer kullanıcı bulunduysa
-            if (user != null)
+         
+            if (user != null) // kullanıcı adı, şifre ve aktiflik kontrolünden geçen bir kullanıcı bulunduysa
             {
                 // Session içine kullanıcı bilgilerini kaydediyoruz
                 // Böylece sistem giriş yapan kişiyi hatırlıyor

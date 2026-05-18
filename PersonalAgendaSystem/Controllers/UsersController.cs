@@ -22,7 +22,7 @@ namespace PersonalAgendaSystem.Controllers
             return Session["Role"] != null && Session["Role"].ToString() == "Admin";
         }
 
-        private ActionResult RedirectIfNotAdmin()
+        private ActionResult RedirectIfNotAdmin() //Kullanýcýnýn admin olup olmadýðýný kontrol eder. Admin deðilse uygun sayfaya yönlendirir.
         {
             if (Session["UserID"] == null)
             {
@@ -42,7 +42,7 @@ namespace PersonalAgendaSystem.Controllers
             ViewBag.Roles = new SelectList(new[]
             {
                 new SelectListItem { Text = "Admin", Value = "Admin" },
-                new SelectListItem { Text = "KullanÄ±cÄ±", Value = "Kullanici" }
+                new SelectListItem { Text = "Kullanici", Value = "Kullanici" }
             }, "Value", "Text", selectedRole);
         }
 
@@ -50,27 +50,27 @@ namespace PersonalAgendaSystem.Controllers
         {
             if (string.IsNullOrWhiteSpace(user.FullName))
             {
-                ModelState.AddModelError("FullName", "Ad soyad boÅŸ bÄ±rakÄ±lamaz.");
+                ModelState.AddModelError("FullName", "Ad soyad bos birakilamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.UserName))
             {
-                ModelState.AddModelError("UserName", "KullanÄ±cÄ± adÄ± boÅŸ bÄ±rakÄ±lamaz.");
+                ModelState.AddModelError("UserName", "Kullanici adi bos birakilamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.Email))
             {
-                ModelState.AddModelError("Email", "E-posta boÅŸ bÄ±rakÄ±lamaz.");
+                ModelState.AddModelError("Email", "E-posta bos birakilamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.Password))
             {
-                ModelState.AddModelError("Password", "Åžifre boÅŸ bÄ±rakÄ±lamaz.");
+                ModelState.AddModelError("Password", "Sifre bos birakilamaz.");
             }
 
             if (string.IsNullOrWhiteSpace(user.Role))
             {
-                ModelState.AddModelError("Role", "Rol seÃ§iniz.");
+                ModelState.AddModelError("Role", "Rol seciniz.");
             }
         }
 
@@ -139,7 +139,7 @@ namespace PersonalAgendaSystem.Controllers
                     return View(user);
                 }
 
-                user.IsActive = true;
+                user.IsActive = true; //Yeni oluþturulan kullanýcý varsayýlan olarak aktif hale getirilir.
 
                 db.Users.Add(user);
                 db.SaveChanges();
